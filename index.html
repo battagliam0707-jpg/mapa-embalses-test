@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_df17903e91a922c4e7ae37e0405a1a16 {
+                #map_d669f4816d325dc650a619f73b37156e {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -61,9 +61,9 @@
         position: fixed;
         top: 10px;
         right: 10px;
-        width: 350px;
+        width: 360px;
         max-height: 85vh;
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.96);
         border-radius: 8px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         z-index: 9999;
@@ -114,7 +114,7 @@
     }
     .widget-table th, .widget-table td {
         border-bottom: 1px solid #ddd;
-        padding: 4px 2px;
+        padding: 5px 2px;
         text-align: left;
     }
     .widget-table th {
@@ -123,7 +123,7 @@
         top: 0;
     }
     .bar-container {
-        margin-bottom: 6px;
+        margin-bottom: 7px;
     }
     .bar-label {
         display: flex;
@@ -132,7 +132,7 @@
         font-weight: bold;
     }
     .bar-bg {
-        background: #eee;
+        background: #e9ecef;
         border-radius: 4px;
         height: 10px;
         width: 100%;
@@ -143,6 +143,24 @@
         border-radius: 4px;
         transition: width 0.3s;
     }
+    .legend-box {
+        padding: 6px;
+        background: #f8f9fa;
+        border-top: 1px solid #eee;
+        font-size: 10px;
+        display: flex;
+        justify-content: space-around;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
 </style>
 
 <div class="dashboard-panel" id="dashboardPanel">
@@ -151,8 +169,8 @@
         <button onclick="toggleDashboard()" style="background:none; border:none; color:white; cursor:pointer; font-weight:bold;">—</button>
     </div>
     <div class="dashboard-tabs" id="dashTabs">
-        <button class="tab-btn active" onclick="switchTab('tablaTab', this)">Vista Map (Tabla)</button>
-        <button class="tab-btn" onclick="switchTab('rankingTab', this)">Ranking Niveles (%)</button>
+        <button class="tab-btn active" onclick="switchTab('tablaTab', this)">Tabla de Vista</button>
+        <button class="tab-btn" onclick="switchTab('rankingTab', this)">Ranking Interactivo (%)</button>
     </div>
     <div class="dashboard-content" id="tablaTab">
         <table class="widget-table">
@@ -160,7 +178,7 @@
                 <tr>
                     <th>Represa</th>
                     <th>País</th>
-                    <th>Cap. MW</th>
+                    <th>MW</th>
                     <th>Nivel</th>
                 </tr>
             </thead>
@@ -170,10 +188,15 @@
     <div class="dashboard-content" id="rankingTab" style="display:none;">
         <div id="rankingBars"></div>
     </div>
+    <div class="legend-box">
+        <div class="legend-item"><div class="legend-dot" style="background:#27AE60;"></div> Óptimo (50-85%)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#F39C12;"></div> Sequía (<50%)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E74C3C;"></div> Riesgo (>85%)</div>
+    </div>
 </div>
 
 <script>
-    const datosEmbalses = [{"id": "ITAIPU", "nombre": "Represa de Itaipú", "pais": "Brasil / Paraguay", "rio": "Río Paraná", "ano": "1984/91/2003", "capacidad_mw": 14000, "produccion_twh": "98.6", "area_km2": "1,350", "lat": -25.412, "lon": -54.588, "tipo": "ons", "codigo_ons": "ITAIPU", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "BELO_MONTE", "nombre": "Central Hidroeléctrica de Belo Monte", "pais": "Brasil", "rio": "Río Xingu", "ano": "2016/19", "capacidad_mw": 11233, "produccion_twh": "39.5", "area_km2": "478", "lat": -3.123, "lon": -51.777, "tipo": "ons", "codigo_ons": "BELO MONTE", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "TUCURUI", "nombre": "Presa de Tucuruí", "pais": "Brasil", "rio": "Río Tocantins", "ano": "1984", "capacidad_mw": 8370, "produccion_twh": "41.0", "area_km2": "3,014", "lat": -3.831, "lon": -49.648, "tipo": "ons", "codigo_ons": "TUCURUI", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "PAULO_AFONSO", "nombre": "Complejo Hidroeléctrico Paulo Afonso", "pais": "Brasil", "rio": "Río São Francisco", "ano": "1979", "capacidad_mw": 4279, "produccion_twh": "N/D", "area_km2": "N/D", "lat": -9.397, "lon": -38.214, "tipo": "ons", "codigo_ons": "MOXOTO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "JIRAU", "nombre": "Central Hidroeléctrica de Jirau", "pais": "Brasil", "rio": "Río Madeira", "ano": "2013", "capacidad_mw": 3750, "produccion_twh": "19.1", "area_km2": "258", "lat": -9.266, "lon": -64.643, "tipo": "ons", "codigo_ons": "JIRAU", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "SANTO_ANTONIO", "nombre": "Central Hidroeléctrica Santo Antônio", "pais": "Brasil", "rio": "Río Madeira", "ano": "2012", "capacidad_mw": 3568, "produccion_twh": "21.2", "area_km2": "429", "lat": -8.802, "lon": -63.951, "tipo": "ons", "codigo_ons": "SANTO ANTONIO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "ILHA_SOLTEIRA", "nombre": "Represa de Ilha Solteira", "pais": "Brasil", "rio": "Río Paraná", "ano": "1974", "capacidad_mw": 3200, "produccion_twh": "N/D", "area_km2": "N/D", "lat": -20.382, "lon": -51.365, "tipo": "ons", "codigo_ons": "ILHA SOLTEIRA", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "XINGO", "nombre": "Presa de Xingó", "pais": "Brasil", "rio": "Río São Francisco", "ano": "1994/97", "capacidad_mw": 3162, "produccion_twh": "N/D", "area_km2": "60", "lat": -9.625, "lon": -37.965, "tipo": "ons", "codigo_ons": "XINGO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "GURI", "nombre": "Central Simón Bolívar (Guri)", "pais": "Venezuela", "rio": "Río Caroní", "ano": "1986", "capacidad_mw": 10200, "produccion_twh": "46.0", "area_km2": "4,250", "lat": 7.766, "lon": -62.998, "tipo": "satelital", "volumen_pct": 58.2, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "orange"}, {"id": "MACAGUA", "nombre": "Represa de Las Macagua (I, II y III)", "pais": "Venezuela", "rio": "Río Caroní", "ano": "1961/2010", "capacidad_mw": 3167.5, "produccion_twh": "15.2", "area_km2": "47.4", "lat": 8.304, "lon": -62.668, "tipo": "satelital", "volumen_pct": 78.5, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green"}, {"id": "CARUACHI", "nombre": "Represa de Caruachi", "pais": "Venezuela", "rio": "Río Caroní", "ano": "2006", "capacidad_mw": 2160, "produccion_twh": "12.9", "area_km2": "52", "lat": 8.157, "lon": -62.798, "tipo": "satelital", "volumen_pct": 74.8, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green"}, {"id": "YACYRETA", "nombre": "Presa de Yacyretá", "pais": "Argentina / Paraguay", "rio": "Río Paraná", "ano": "1998", "capacidad_mw": 4050, "produccion_twh": "19.2", "area_km2": "1,600", "lat": -27.482, "lon": -56.737, "tipo": "yacyreta", "volumen_pct": 89.6, "fecha_actualizacion": "2026-11-04", "fuente_datos": "EBY Boletín (82.72 mSNM)", "color": "green"}, {"id": "SALTO_GRANDE", "nombre": "Represa de Salto Grande", "pais": "Argentina / Uruguay", "rio": "Río Uruguay", "ano": "1979", "capacidad_mw": 1890, "produccion_twh": "8.5", "area_km2": "783", "lat": -31.275, "lon": -57.938, "tipo": "satelital", "volumen_pct": 64.2, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "orange"}, {"id": "PIEDRA_DEL_AGUILA", "nombre": "Embalse Piedra del Águila", "pais": "Argentina", "rio": "Río Limay", "ano": "1993", "capacidad_mw": 1400, "produccion_twh": "5.5", "area_km2": "292", "lat": -40.078, "lon": -70.013, "tipo": "satelital", "volumen_pct": 72.1, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green"}, {"id": "EL_CHOCON", "nombre": "Embalse El Chocón", "pais": "Argentina", "rio": "Río Limay", "ano": "1973", "capacidad_mw": 1200, "produccion_twh": "3.3", "area_km2": "825", "lat": -39.273, "lon": -68.751, "tipo": "satelital", "volumen_pct": 69.8, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "orange"}, {"id": "HIDROITUANGO", "nombre": "Hidroituango", "pais": "Colombia", "rio": "Río Cauca", "ano": "2018", "capacidad_mw": 2400, "produccion_twh": "13.5", "area_km2": "38", "lat": 7.135, "lon": -75.664, "tipo": "colombia", "codigo_xm": "ITUANGO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "GUAVIO", "nombre": "Central Hidroeléctrica del Guavio", "pais": "Colombia", "rio": "Río Guavio", "ano": "1989", "capacidad_mw": 1250, "produccion_twh": "5.8", "area_km2": "15", "lat": 4.723, "lon": -73.508, "tipo": "colombia", "codigo_xm": "GUAVIO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "PENOL_GUATAPE", "nombre": "Embalse El Peñol - Guatapé", "pais": "Colombia", "rio": "Río Nare", "ano": "1972", "capacidad_mw": 560, "produccion_twh": "2.7", "area_km2": "64", "lat": 6.232, "lon": -75.161, "tipo": "colombia", "codigo_xm": "PEÑOL", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "orange"}, {"id": "MANTARO", "nombre": "Complejo Hidroeléctrico del Mantaro", "pais": "Perú", "rio": "Río Mantaro", "ano": "1973", "capacidad_mw": 1008, "produccion_twh": "7.0", "area_km2": "N/D", "lat": -12.213, "lon": -74.654, "tipo": "satelital", "volumen_pct": 81.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green"}, {"id": "RALCO", "nombre": "Central Hidroeléctrica Ralco", "pais": "Chile", "rio": "Río Biobío", "ano": "2004", "capacidad_mw": 690, "produccion_twh": "3.1", "area_km2": "34", "lat": -37.998, "lon": -71.552, "tipo": "satelital", "volumen_pct": 55.4, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "orange"}];
+    const datosEmbalses = [{"id": "ITAIPU", "nombre": "Represa de Itaipú", "pais": "Brasil / Paraguay", "rio": "Río Paraná", "ano": "1984/91/2003", "capacidad_mw": 14000, "produccion_twh": "98.6", "area_km2": "1,350", "lat": -25.412, "lon": -54.588, "tipo": "ons", "codigo_ons": "ITAIPU", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "BELO_MONTE", "nombre": "Central Hidroeléctrica de Belo Monte", "pais": "Brasil", "rio": "Río Xingu", "ano": "2016/19", "capacidad_mw": 11233, "produccion_twh": "39.5", "area_km2": "478", "lat": -3.123, "lon": -51.777, "tipo": "ons", "codigo_ons": "BELO MONTE", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "TUCURUI", "nombre": "Presa de Tucuruí", "pais": "Brasil", "rio": "Río Tocantins", "ano": "1984", "capacidad_mw": 8370, "produccion_twh": "41.0", "area_km2": "3,014", "lat": -3.831, "lon": -49.648, "tipo": "ons", "codigo_ons": "TUCURUI", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "PAULO_AFONSO", "nombre": "Complejo Hidroeléctrico Paulo Afonso", "pais": "Brasil", "rio": "Río São Francisco", "ano": "1979", "capacidad_mw": 4279, "produccion_twh": "N/D", "area_km2": "N/D", "lat": -9.397, "lon": -38.214, "tipo": "ons", "codigo_ons": "MOXOTO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "JIRAU", "nombre": "Central Hidroeléctrica de Jirau", "pais": "Brasil", "rio": "Río Madeira", "ano": "2013", "capacidad_mw": 3750, "produccion_twh": "19.1", "area_km2": "258", "lat": -9.266, "lon": -64.643, "tipo": "ons", "codigo_ons": "JIRAU", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "SANTO_ANTONIO", "nombre": "Central Hidroeléctrica Santo Antônio", "pais": "Brasil", "rio": "Río Madeira", "ano": "2012", "capacidad_mw": 3568, "produccion_twh": "21.2", "area_km2": "429", "lat": -8.802, "lon": -63.951, "tipo": "ons", "codigo_ons": "SANTO ANTONIO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "ILHA_SOLTEIRA", "nombre": "Represa de Ilha Solteira", "pais": "Brasil", "rio": "Río Paraná", "ano": "1974", "capacidad_mw": 3200, "produccion_twh": "N/D", "area_km2": "N/D", "lat": -20.382, "lon": -51.365, "tipo": "ons", "codigo_ons": "ILHA SOLTEIRA", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "XINGO", "nombre": "Presa de Xingó", "pais": "Brasil", "rio": "Río São Francisco", "ano": "1994/97", "capacidad_mw": 3162, "produccion_twh": "N/D", "area_km2": "60", "lat": -9.625, "lon": -37.965, "tipo": "ons", "codigo_ons": "XINGO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "GURI", "nombre": "Central Simón Bolívar (Guri)", "pais": "Venezuela", "rio": "Río Caroní", "ano": "1986", "capacidad_mw": 10200, "produccion_twh": "46.0", "area_km2": "4,250", "lat": 7.766, "lon": -62.998, "tipo": "satelital", "volumen_pct": 58.2, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "MACAGUA", "nombre": "Represa de Las Macagua (I, II y III)", "pais": "Venezuela", "rio": "Río Caroní", "ano": "1961/2010", "capacidad_mw": 3167.5, "produccion_twh": "15.2", "area_km2": "47.4", "lat": 8.304, "lon": -62.668, "tipo": "satelital", "volumen_pct": 78.5, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "CARUACHI", "nombre": "Represa de Caruachi", "pais": "Venezuela", "rio": "Río Caroní", "ano": "2006", "capacidad_mw": 2160, "produccion_twh": "12.9", "area_km2": "52", "lat": 8.157, "lon": -62.798, "tipo": "satelital", "volumen_pct": 74.8, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "YACYRETA", "nombre": "Presa de Yacyretá", "pais": "Argentina / Paraguay", "rio": "Río Paraná", "ano": "1998", "capacidad_mw": 4050, "produccion_twh": "19.2", "area_km2": "1,600", "lat": -27.482, "lon": -56.737, "tipo": "yacyreta", "volumen_pct": 89.6, "fecha_actualizacion": "2026-11-04", "fuente_datos": "EBY Boletín (82.72 mSNM)", "color": "red", "color_hex": "#E74C3C", "estado_desc": "Riesgo Desbordamiento (>85%)"}, {"id": "SALTO_GRANDE", "nombre": "Represa de Salto Grande", "pais": "Argentina / Uruguay", "rio": "Río Uruguay", "ano": "1979", "capacidad_mw": 1890, "produccion_twh": "8.5", "area_km2": "783", "lat": -31.275, "lon": -57.938, "tipo": "satelital", "volumen_pct": 64.2, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "PIEDRA_DEL_AGUILA", "nombre": "Embalse Piedra del Águila", "pais": "Argentina", "rio": "Río Limay", "ano": "1993", "capacidad_mw": 1400, "produccion_twh": "5.5", "area_km2": "292", "lat": -40.078, "lon": -70.013, "tipo": "satelital", "volumen_pct": 72.1, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "EL_CHOCON", "nombre": "Embalse El Chocón", "pais": "Argentina", "rio": "Río Limay", "ano": "1973", "capacidad_mw": 1200, "produccion_twh": "3.3", "area_km2": "825", "lat": -39.273, "lon": -68.751, "tipo": "satelital", "volumen_pct": 69.8, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "HIDROITUANGO", "nombre": "Hidroituango", "pais": "Colombia", "rio": "Río Cauca", "ano": "2018", "capacidad_mw": 2400, "produccion_twh": "13.5", "area_km2": "38", "lat": 7.135, "lon": -75.664, "tipo": "colombia", "codigo_xm": "ITUANGO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "GUAVIO", "nombre": "Central Hidroeléctrica del Guavio", "pais": "Colombia", "rio": "Río Guavio", "ano": "1989", "capacidad_mw": 1250, "produccion_twh": "5.8", "area_km2": "15", "lat": 4.723, "lon": -73.508, "tipo": "colombia", "codigo_xm": "GUAVIO", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "PENOL_GUATAPE", "nombre": "Embalse El Peñol - Guatapé", "pais": "Colombia", "rio": "Río Nare", "ano": "1972", "capacidad_mw": 560, "produccion_twh": "2.7", "area_km2": "64", "lat": 6.232, "lon": -75.161, "tipo": "colombia", "codigo_xm": "PEÑOL", "volumen_pct": 60.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Telemetría Satelital Backup", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "MANTARO", "nombre": "Complejo Hidroeléctrico del Mantaro", "pais": "Perú", "rio": "Río Mantaro", "ano": "1973", "capacidad_mw": 1008, "produccion_twh": "7.0", "area_km2": "N/D", "lat": -12.213, "lon": -74.654, "tipo": "satelital", "volumen_pct": 81.0, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}, {"id": "RALCO", "nombre": "Central Hidroeléctrica Ralco", "pais": "Chile", "rio": "Río Biobío", "ano": "2004", "capacidad_mw": 690, "produccion_twh": "3.1", "area_km2": "34", "lat": -37.998, "lon": -71.552, "tipo": "satelital", "volumen_pct": 55.4, "fecha_actualizacion": "2026-11-04", "fuente_datos": "Altimetría Satelital DAHITI / CTM", "color": "green", "color_hex": "#27AE60", "estado_desc": "Condición Óptima"}];
 
     function switchTab(tabId, btn) {
         document.getElementById('tablaTab').style.display = tabId === 'tablaTab' ? 'block' : 'none';
@@ -192,7 +215,7 @@
         content2.style.display = 'none';
     }
 
-    function actualizarWidgets() {
+    function actualizarDashboard() {
         let mapObj = null;
         for (let key in window) {
             if (key.startsWith('map_') && window[key] instanceof L.Map) {
@@ -204,46 +227,44 @@
         if (!mapObj) return;
 
         const bounds = mapObj.getBounds();
+        const visibles = datosEmbalses.filter(d => bounds.contains([d.lat, d.lon]));
+
         const tbody = document.getElementById('tablaBody');
         tbody.innerHTML = '';
-
-        let visibles = 0;
-        datosEmbalses.forEach(d => {
-            if (bounds.contains([d.lat, d.lon])) {
-                visibles++;
+        if (visibles.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:8px;">Sin represas en pantalla</td></tr>';
+        } else {
+            visibles.forEach(d => {
                 const row = `<tr>
                     <td><b>${d.nombre}</b></td>
                     <td>${d.pais.split('/')[0].trim()}</td>
                     <td>${d.capacidad_mw.toLocaleString()}</td>
-                    <td><b style="color:${d.color}">${d.volumen_pct}%</b></td>
+                    <td><b style="color:${d.color_hex}">${d.volumen_pct}%</b></td>
                 </tr>`;
                 tbody.innerHTML += row;
-            }
-        });
-
-        if (visibles === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Sin represas en pantalla</td></tr>';
+            });
         }
-    }
 
-    function generarRanking() {
         const rankingDiv = document.getElementById('rankingBars');
         rankingDiv.innerHTML = '';
-        const ordenados = [...datosEmbalses].sort((a, b) => b.volumen_pct - a.volumen_pct);
-
-        ordenados.forEach(d => {
-            const item = `
-            <div class="bar-container">
-                <div class="bar-label">
-                    <span>${d.nombre} (${d.pais.split('/')[0].trim()})</span>
-                    <span style="color:${d.color}">${d.volumen_pct}%</span>
-                </div>
-                <div class="bar-bg">
-                    <div class="bar-fill" style="width: ${d.volumen_pct}%; background-color: ${d.color};"></div>
-                </div>
-            </div>`;
-            rankingDiv.innerHTML += item;
-        });
+        if (visibles.length === 0) {
+            rankingDiv.innerHTML = '<div style="text-align:center; padding:12px; color:#666;">Sin represas en el área visible</div>';
+        } else {
+            const ordenados = [...visibles].sort((a, b) => b.volumen_pct - a.volumen_pct);
+            ordenados.forEach(d => {
+                const item = `
+                <div class="bar-container">
+                    <div class="bar-label">
+                        <span>${d.nombre} (${d.pais.split('/')[0].trim()})</span>
+                        <span style="color:${d.color_hex}">${d.volumen_pct}%</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill" style="width: ${d.volumen_pct}%; background-color: ${d.color_hex};"></div>
+                    </div>
+                </div>`;
+                rankingDiv.innerHTML += item;
+            });
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -257,22 +278,21 @@
             }
 
             if (mapObj) {
-                mapObj.on('moveend zoomend', actualizarWidgets);
-                actualizarWidgets();
-                generarRanking();
+                mapObj.on('moveend zoomend', actualizarDashboard);
+                actualizarDashboard();
             }
         }, 800);
     });
 </script>
     
-            <div class="folium-map" id="map_df17903e91a922c4e7ae37e0405a1a16" ></div>
+            <div class="folium-map" id="map_d669f4816d325dc650a619f73b37156e" ></div>
         
 </body>
 <script>
     
     
-            var map_df17903e91a922c4e7ae37e0405a1a16 = L.map(
-                "map_df17903e91a922c4e7ae37e0405a1a16",
+            var map_d669f4816d325dc650a619f73b37156e = L.map(
+                "map_d669f4816d325dc650a619f73b37156e",
                 {
                     center: [-15.0, -65.0],
                     crs: L.CRS.EPSG3857,
@@ -284,13 +304,13 @@
 
                 }
             );
-            L.control.scale().addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+            L.control.scale().addTo(map_d669f4816d325dc650a619f73b37156e);
 
             
 
         
     
-            var tile_layer_5d658cde486f8c6328326bf1d19f22c4 = L.tileLayer(
+            var tile_layer_5ab7b51b8855af32de9fecd6ce97e5c5 = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -307,10 +327,10 @@
             );
         
     
-            tile_layer_5d658cde486f8c6328326bf1d19f22c4.addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+            tile_layer_5ab7b51b8855af32de9fecd6ce97e5c5.addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-            var tile_layer_26e959a07f58ebad987de3c5b363c9b3 = L.tileLayer(
+            var tile_layer_ccb1979f8cc4de2f733d4a46101fc742 = L.tileLayer(
                 "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
                 {
   "minZoom": 0,
@@ -327,33 +347,33 @@
             );
         
     
-            tile_layer_26e959a07f58ebad987de3c5b363c9b3.addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+            tile_layer_ccb1979f8cc4de2f733d4a46101fc742.addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-            var circle_marker_ca3ec00ce967a3391462e654eac9a032 = L.circleMarker(
+            var circle_marker_f3e199ada334f96bf1dd9c4a9e543b26 = L.circleMarker(
                 [-25.412, -54.588],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 20.484911629978157, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 20.484911629978157, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_4cb397f9dec5f9c632729f525773f0be = L.popup({
+        var popup_3d4849a5339141b93ce2f53c57a341a9 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_24617d1237652e141397ac3e8300da72 = $(`<div id="html_24617d1237652e141397ac3e8300da72" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Itaipú</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil / Paraguay<br>         <b>Río:</b> Río Paraná<br>         <b>Año Inauguración:</b> 1984/91/2003<br>         <b>Capacidad Total:</b> 14,000.0 MW<br>         <b>Prod. Anual Máx:</b> 98.6 TWh<br>         <b>Área Inundada:</b> 1,350 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_4cb397f9dec5f9c632729f525773f0be.setContent(html_24617d1237652e141397ac3e8300da72);
+                var html_53d326b86b5e0c9545d096e43178e590 = $(`<div id="html_53d326b86b5e0c9545d096e43178e590" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Itaipú</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil / Paraguay<br>         <b>Río:</b> Río Paraná<br>         <b>Año Inauguración:</b> 1984/91/2003<br>         <b>Capacidad Total:</b> 14,000.0 MW<br>         <b>Prod. Anual Máx:</b> 98.6 TWh<br>         <b>Área Inundada:</b> 1,350 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_3d4849a5339141b93ce2f53c57a341a9.setContent(html_53d326b86b5e0c9545d096e43178e590);
             
         
 
-        circle_marker_ca3ec00ce967a3391462e654eac9a032.bindPopup(popup_4cb397f9dec5f9c632729f525773f0be)
+        circle_marker_f3e199ada334f96bf1dd9c4a9e543b26.bindPopup(popup_3d4849a5339141b93ce2f53c57a341a9)
         ;
 
         
     
     
-            circle_marker_ca3ec00ce967a3391462e654eac9a032.bindTooltip(
+            circle_marker_f3e199ada334f96bf1dd9c4a9e543b26.bindTooltip(
                 `<div>
                      Represa de Itaipú (60.0%)
                  </div>`,
@@ -363,30 +383,30 @@
             );
         
     
-            var circle_marker_ba7d748dbd6b403989523df78f265005 = L.circleMarker(
+            var circle_marker_dbb2bb5e27e2bed26cadb1bf1ab847c0 = L.circleMarker(
                 [-3.123, -51.777],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 19.618799072650766, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 19.618799072650766, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_59c7c4d3f2cbdbd9a6272412804c48e3 = L.popup({
+        var popup_4cccff9a8c65492b0969a50620d7a30b = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_7876083c226587449d0f315e1b3fd586 = $(`<div id="html_7876083c226587449d0f315e1b3fd586" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica de Belo Monte</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Xingu<br>         <b>Año Inauguración:</b> 2016/19<br>         <b>Capacidad Total:</b> 11,233.0 MW<br>         <b>Prod. Anual Máx:</b> 39.5 TWh<br>         <b>Área Inundada:</b> 478 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_59c7c4d3f2cbdbd9a6272412804c48e3.setContent(html_7876083c226587449d0f315e1b3fd586);
+                var html_a366c0f16afa0a376526d14009e1106c = $(`<div id="html_a366c0f16afa0a376526d14009e1106c" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica de Belo Monte</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Xingu<br>         <b>Año Inauguración:</b> 2016/19<br>         <b>Capacidad Total:</b> 11,233.0 MW<br>         <b>Prod. Anual Máx:</b> 39.5 TWh<br>         <b>Área Inundada:</b> 478 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_4cccff9a8c65492b0969a50620d7a30b.setContent(html_a366c0f16afa0a376526d14009e1106c);
             
         
 
-        circle_marker_ba7d748dbd6b403989523df78f265005.bindPopup(popup_59c7c4d3f2cbdbd9a6272412804c48e3)
+        circle_marker_dbb2bb5e27e2bed26cadb1bf1ab847c0.bindPopup(popup_4cccff9a8c65492b0969a50620d7a30b)
         ;
 
         
     
     
-            circle_marker_ba7d748dbd6b403989523df78f265005.bindTooltip(
+            circle_marker_dbb2bb5e27e2bed26cadb1bf1ab847c0.bindTooltip(
                 `<div>
                      Central Hidroeléctrica de Belo Monte (60.0%)
                  </div>`,
@@ -396,30 +416,30 @@
             );
         
     
-            var circle_marker_e307f6e9b4504cffdb5ae7cd8ed87fc9 = L.circleMarker(
+            var circle_marker_1571dc1d4e59bd82d3900bb6012a62f0 = L.circleMarker(
                 [-3.831, -49.648],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 18.54189406638283, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 18.54189406638283, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_2b4be58705c2496c35c63a1a06af6d48 = L.popup({
+        var popup_858e05dabaec26ced39358d71e5ef852 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_964dd34b1923ae429c732ebb20833310 = $(`<div id="html_964dd34b1923ae429c732ebb20833310" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Presa de Tucuruí</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Tocantins<br>         <b>Año Inauguración:</b> 1984<br>         <b>Capacidad Total:</b> 8,370.0 MW<br>         <b>Prod. Anual Máx:</b> 41.0 TWh<br>         <b>Área Inundada:</b> 3,014 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_2b4be58705c2496c35c63a1a06af6d48.setContent(html_964dd34b1923ae429c732ebb20833310);
+                var html_370872a7f0a7519436a7bea8700c447d = $(`<div id="html_370872a7f0a7519436a7bea8700c447d" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Presa de Tucuruí</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Tocantins<br>         <b>Año Inauguración:</b> 1984<br>         <b>Capacidad Total:</b> 8,370.0 MW<br>         <b>Prod. Anual Máx:</b> 41.0 TWh<br>         <b>Área Inundada:</b> 3,014 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_858e05dabaec26ced39358d71e5ef852.setContent(html_370872a7f0a7519436a7bea8700c447d);
             
         
 
-        circle_marker_e307f6e9b4504cffdb5ae7cd8ed87fc9.bindPopup(popup_2b4be58705c2496c35c63a1a06af6d48)
+        circle_marker_1571dc1d4e59bd82d3900bb6012a62f0.bindPopup(popup_858e05dabaec26ced39358d71e5ef852)
         ;
 
         
     
     
-            circle_marker_e307f6e9b4504cffdb5ae7cd8ed87fc9.bindTooltip(
+            circle_marker_1571dc1d4e59bd82d3900bb6012a62f0.bindTooltip(
                 `<div>
                      Presa de Tucuruí (60.0%)
                  </div>`,
@@ -429,30 +449,30 @@
             );
         
     
-            var circle_marker_1c6aef950c8adb5e9939d53e95be2937 = L.circleMarker(
+            var circle_marker_0b8d59a80e957c3129a7944518fddf34 = L.circleMarker(
                 [-9.397, -38.214],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.393835526754025, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.393835526754025, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_b31bb930991678a6a8fbd3ae9fdbe957 = L.popup({
+        var popup_b71de6b534d1e2774def22ce19d79313 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_dd5b40dd5fd8222c2f882ede654326dc = $(`<div id="html_dd5b40dd5fd8222c2f882ede654326dc" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Complejo Hidroeléctrico Paulo Afonso</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río São Francisco<br>         <b>Año Inauguración:</b> 1979<br>         <b>Capacidad Total:</b> 4,279.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> N/D km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_b31bb930991678a6a8fbd3ae9fdbe957.setContent(html_dd5b40dd5fd8222c2f882ede654326dc);
+                var html_ddc6845d2c55814ab6af834e5aa0e79f = $(`<div id="html_ddc6845d2c55814ab6af834e5aa0e79f" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Complejo Hidroeléctrico Paulo Afonso</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río São Francisco<br>         <b>Año Inauguración:</b> 1979<br>         <b>Capacidad Total:</b> 4,279.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> N/D km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_b71de6b534d1e2774def22ce19d79313.setContent(html_ddc6845d2c55814ab6af834e5aa0e79f);
             
         
 
-        circle_marker_1c6aef950c8adb5e9939d53e95be2937.bindPopup(popup_b31bb930991678a6a8fbd3ae9fdbe957)
+        circle_marker_0b8d59a80e957c3129a7944518fddf34.bindPopup(popup_b71de6b534d1e2774def22ce19d79313)
         ;
 
         
     
     
-            circle_marker_1c6aef950c8adb5e9939d53e95be2937.bindTooltip(
+            circle_marker_0b8d59a80e957c3129a7944518fddf34.bindTooltip(
                 `<div>
                      Complejo Hidroeléctrico Paulo Afonso (60.0%)
                  </div>`,
@@ -462,30 +482,30 @@
             );
         
     
-            var circle_marker_ab46a5c938a761555f44910f32ce20d5 = L.circleMarker(
+            var circle_marker_7570d19dfc7967cad31913ad16962a3a = L.circleMarker(
                 [-9.266, -64.643],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.016794289799048, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.016794289799048, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_f73e6bc30b034fc41f8a295d33e28ff3 = L.popup({
+        var popup_8f3aeb3eba09dce9cd38005a59b7407e = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_23f6bb42fbf915523c4d46ce5bad4630 = $(`<div id="html_23f6bb42fbf915523c4d46ce5bad4630" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica de Jirau</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Madeira<br>         <b>Año Inauguración:</b> 2013<br>         <b>Capacidad Total:</b> 3,750.0 MW<br>         <b>Prod. Anual Máx:</b> 19.1 TWh<br>         <b>Área Inundada:</b> 258 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_f73e6bc30b034fc41f8a295d33e28ff3.setContent(html_23f6bb42fbf915523c4d46ce5bad4630);
+                var html_52423eedf0df44cd55661dded4135019 = $(`<div id="html_52423eedf0df44cd55661dded4135019" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica de Jirau</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Madeira<br>         <b>Año Inauguración:</b> 2013<br>         <b>Capacidad Total:</b> 3,750.0 MW<br>         <b>Prod. Anual Máx:</b> 19.1 TWh<br>         <b>Área Inundada:</b> 258 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_8f3aeb3eba09dce9cd38005a59b7407e.setContent(html_52423eedf0df44cd55661dded4135019);
             
         
 
-        circle_marker_ab46a5c938a761555f44910f32ce20d5.bindPopup(popup_f73e6bc30b034fc41f8a295d33e28ff3)
+        circle_marker_7570d19dfc7967cad31913ad16962a3a.bindPopup(popup_8f3aeb3eba09dce9cd38005a59b7407e)
         ;
 
         
     
     
-            circle_marker_ab46a5c938a761555f44910f32ce20d5.bindTooltip(
+            circle_marker_7570d19dfc7967cad31913ad16962a3a.bindTooltip(
                 `<div>
                      Central Hidroeléctrica de Jirau (60.0%)
                  </div>`,
@@ -495,30 +515,30 @@
             );
         
     
-            var circle_marker_878db8fa02f6a4ac20c7ce0b27c4fe9b = L.circleMarker(
+            var circle_marker_dc61fd052d9091c428cc156694d05f7c = L.circleMarker(
                 [-8.802, -63.951],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.878225972873732, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.878225972873732, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_41e68362612b71ad1bf3df10a014ed84 = L.popup({
+        var popup_0350e30f814c295b691ddd6eb754178b = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_666bb179922fc4e80f1e98c90ad0fd03 = $(`<div id="html_666bb179922fc4e80f1e98c90ad0fd03" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica Santo Antônio</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Madeira<br>         <b>Año Inauguración:</b> 2012<br>         <b>Capacidad Total:</b> 3,568.0 MW<br>         <b>Prod. Anual Máx:</b> 21.2 TWh<br>         <b>Área Inundada:</b> 429 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_41e68362612b71ad1bf3df10a014ed84.setContent(html_666bb179922fc4e80f1e98c90ad0fd03);
+                var html_1567cfd140f16c41fa06091b024452d5 = $(`<div id="html_1567cfd140f16c41fa06091b024452d5" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica Santo Antônio</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Madeira<br>         <b>Año Inauguración:</b> 2012<br>         <b>Capacidad Total:</b> 3,568.0 MW<br>         <b>Prod. Anual Máx:</b> 21.2 TWh<br>         <b>Área Inundada:</b> 429 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_0350e30f814c295b691ddd6eb754178b.setContent(html_1567cfd140f16c41fa06091b024452d5);
             
         
 
-        circle_marker_878db8fa02f6a4ac20c7ce0b27c4fe9b.bindPopup(popup_41e68362612b71ad1bf3df10a014ed84)
+        circle_marker_dc61fd052d9091c428cc156694d05f7c.bindPopup(popup_0350e30f814c295b691ddd6eb754178b)
         ;
 
         
     
     
-            circle_marker_878db8fa02f6a4ac20c7ce0b27c4fe9b.bindTooltip(
+            circle_marker_dc61fd052d9091c428cc156694d05f7c.bindTooltip(
                 `<div>
                      Central Hidroeléctrica Santo Antônio (60.0%)
                  </div>`,
@@ -528,30 +548,30 @@
             );
         
     
-            var circle_marker_11a9d54f63e37608510d8467621de7b3 = L.circleMarker(
+            var circle_marker_b5d57148346328202a15da5c140f06a1 = L.circleMarker(
                 [-20.382, -51.365],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.58168730994366, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.58168730994366, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_1d59d4386c0785daca24a127261937a7 = L.popup({
+        var popup_5e8efc932eeefd0d18f7a704424ffb1c = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_1a9794613899e5629cd6cdc3e6ba2365 = $(`<div id="html_1a9794613899e5629cd6cdc3e6ba2365" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Ilha Solteira</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Paraná<br>         <b>Año Inauguración:</b> 1974<br>         <b>Capacidad Total:</b> 3,200.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> N/D km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_1d59d4386c0785daca24a127261937a7.setContent(html_1a9794613899e5629cd6cdc3e6ba2365);
+                var html_ae1e0910aab28509fae4b3952afd5677 = $(`<div id="html_ae1e0910aab28509fae4b3952afd5677" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Ilha Solteira</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Paraná<br>         <b>Año Inauguración:</b> 1974<br>         <b>Capacidad Total:</b> 3,200.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> N/D km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_5e8efc932eeefd0d18f7a704424ffb1c.setContent(html_ae1e0910aab28509fae4b3952afd5677);
             
         
 
-        circle_marker_11a9d54f63e37608510d8467621de7b3.bindPopup(popup_1d59d4386c0785daca24a127261937a7)
+        circle_marker_b5d57148346328202a15da5c140f06a1.bindPopup(popup_5e8efc932eeefd0d18f7a704424ffb1c)
         ;
 
         
     
     
-            circle_marker_11a9d54f63e37608510d8467621de7b3.bindTooltip(
+            circle_marker_b5d57148346328202a15da5c140f06a1.bindTooltip(
                 `<div>
                      Represa de Ilha Solteira (60.0%)
                  </div>`,
@@ -561,30 +581,30 @@
             );
         
     
-            var circle_marker_54103ceefea2c6745c16ab615437fa42 = L.circleMarker(
+            var circle_marker_97e358427ffbb1a802cf171aad91c5ea = L.circleMarker(
                 [-9.625, -37.965],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.549691067107664, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.549691067107664, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_5238b864c5cfb7473d1d02dd662bd03a = L.popup({
+        var popup_1db02b47510715cbde5c056845194042 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_128df306f4989be0d066d237468d98fc = $(`<div id="html_128df306f4989be0d066d237468d98fc" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Presa de Xingó</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río São Francisco<br>         <b>Año Inauguración:</b> 1994/97<br>         <b>Capacidad Total:</b> 3,162.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> 60 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_5238b864c5cfb7473d1d02dd662bd03a.setContent(html_128df306f4989be0d066d237468d98fc);
+                var html_bb0004709c76a797aa35cf03e9930f07 = $(`<div id="html_bb0004709c76a797aa35cf03e9930f07" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Presa de Xingó</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río São Francisco<br>         <b>Año Inauguración:</b> 1994/97<br>         <b>Capacidad Total:</b> 3,162.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> 60 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_1db02b47510715cbde5c056845194042.setContent(html_bb0004709c76a797aa35cf03e9930f07);
             
         
 
-        circle_marker_54103ceefea2c6745c16ab615437fa42.bindPopup(popup_5238b864c5cfb7473d1d02dd662bd03a)
+        circle_marker_97e358427ffbb1a802cf171aad91c5ea.bindPopup(popup_1db02b47510715cbde5c056845194042)
         ;
 
         
     
     
-            circle_marker_54103ceefea2c6745c16ab615437fa42.bindTooltip(
+            circle_marker_97e358427ffbb1a802cf171aad91c5ea.bindTooltip(
                 `<div>
                      Presa de Xingó (60.0%)
                  </div>`,
@@ -594,30 +614,30 @@
             );
         
     
-            var circle_marker_3c462ae8cf00001a889dd4041c837b2c = L.circleMarker(
+            var circle_marker_7883c0444f44d48f34b13a93c7a6074b = L.circleMarker(
                 [7.766, -62.998],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 19.25586425490707, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 19.25586425490707, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_467d1af023117403a14b8c5aee582c71 = L.popup({
+        var popup_de221474f7210c4ff005e439a3702e30 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_d62c2c37ec9a0a405189e9759dc920d8 = $(`<div id="html_d62c2c37ec9a0a405189e9759dc920d8" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Simón Bolívar (Guri)</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Venezuela<br>         <b>Río:</b> Río Caroní<br>         <b>Año Inauguración:</b> 1986<br>         <b>Capacidad Total:</b> 10,200.0 MW<br>         <b>Prod. Anual Máx:</b> 46.0 TWh<br>         <b>Área Inundada:</b> 4,250 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">58.2%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
-                popup_467d1af023117403a14b8c5aee582c71.setContent(html_d62c2c37ec9a0a405189e9759dc920d8);
+                var html_e29566f8ca6a213c835ac73fa873471a = $(`<div id="html_e29566f8ca6a213c835ac73fa873471a" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Simón Bolívar (Guri)</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Venezuela<br>         <b>Río:</b> Río Caroní<br>         <b>Año Inauguración:</b> 1986<br>         <b>Capacidad Total:</b> 10,200.0 MW<br>         <b>Prod. Anual Máx:</b> 46.0 TWh<br>         <b>Área Inundada:</b> 4,250 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">58.2%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
+                popup_de221474f7210c4ff005e439a3702e30.setContent(html_e29566f8ca6a213c835ac73fa873471a);
             
         
 
-        circle_marker_3c462ae8cf00001a889dd4041c837b2c.bindPopup(popup_467d1af023117403a14b8c5aee582c71)
+        circle_marker_7883c0444f44d48f34b13a93c7a6074b.bindPopup(popup_de221474f7210c4ff005e439a3702e30)
         ;
 
         
     
     
-            circle_marker_3c462ae8cf00001a889dd4041c837b2c.bindTooltip(
+            circle_marker_7883c0444f44d48f34b13a93c7a6074b.bindTooltip(
                 `<div>
                      Central Simón Bolívar (Guri) (58.2%)
                  </div>`,
@@ -627,30 +647,30 @@
             );
         
     
-            var circle_marker_4d47447b54e3ac563aff71907025cc93 = L.circleMarker(
+            var circle_marker_528d6e7c116d018701f9a8b0e3a0bd0a = L.circleMarker(
                 [8.304, -62.668],
-                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.554339177290238, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.554339177290238, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_bf79c1b5c98f9426d9065a955eff286e = L.popup({
+        var popup_26a3c709627752d2874a36393b72c273 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_e0ab1e6db9c098c1641a928d18717c78 = $(`<div id="html_e0ab1e6db9c098c1641a928d18717c78" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Las Macagua (I, II y III)</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Venezuela<br>         <b>Río:</b> Río Caroní<br>         <b>Año Inauguración:</b> 1961/2010<br>         <b>Capacidad Total:</b> 3,167.5 MW<br>         <b>Prod. Anual Máx:</b> 15.2 TWh<br>         <b>Área Inundada:</b> 47.4 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid green;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:green;">78.5%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
-                popup_bf79c1b5c98f9426d9065a955eff286e.setContent(html_e0ab1e6db9c098c1641a928d18717c78);
+                var html_04a8b7e44db16bd0811c3901c3389dd6 = $(`<div id="html_04a8b7e44db16bd0811c3901c3389dd6" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Las Macagua (I, II y III)</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Venezuela<br>         <b>Río:</b> Río Caroní<br>         <b>Año Inauguración:</b> 1961/2010<br>         <b>Capacidad Total:</b> 3,167.5 MW<br>         <b>Prod. Anual Máx:</b> 15.2 TWh<br>         <b>Área Inundada:</b> 47.4 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">78.5%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
+                popup_26a3c709627752d2874a36393b72c273.setContent(html_04a8b7e44db16bd0811c3901c3389dd6);
             
         
 
-        circle_marker_4d47447b54e3ac563aff71907025cc93.bindPopup(popup_bf79c1b5c98f9426d9065a955eff286e)
+        circle_marker_528d6e7c116d018701f9a8b0e3a0bd0a.bindPopup(popup_26a3c709627752d2874a36393b72c273)
         ;
 
         
     
     
-            circle_marker_4d47447b54e3ac563aff71907025cc93.bindTooltip(
+            circle_marker_528d6e7c116d018701f9a8b0e3a0bd0a.bindTooltip(
                 `<div>
                      Represa de Las Macagua (I, II y III) (78.5%)
                  </div>`,
@@ -660,30 +680,30 @@
             );
         
     
-            var circle_marker_27595e862eb60053c1e7fb28599dff00 = L.circleMarker(
+            var circle_marker_57889c48184a6ef30f3b17e13cf3394c = L.circleMarker(
                 [8.157, -62.798],
-                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.583156876819755, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.583156876819755, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_4f4b19fdf742375f93b4c318e7ba4cd7 = L.popup({
+        var popup_353bb264ea28f4760f593f0b82b92f28 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_9085978d7103ce142251546232bb8f71 = $(`<div id="html_9085978d7103ce142251546232bb8f71" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Caruachi</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Venezuela<br>         <b>Río:</b> Río Caroní<br>         <b>Año Inauguración:</b> 2006<br>         <b>Capacidad Total:</b> 2,160.0 MW<br>         <b>Prod. Anual Máx:</b> 12.9 TWh<br>         <b>Área Inundada:</b> 52 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid green;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:green;">74.8%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
-                popup_4f4b19fdf742375f93b4c318e7ba4cd7.setContent(html_9085978d7103ce142251546232bb8f71);
+                var html_f16acd964d47c85e9a144efd6988d571 = $(`<div id="html_f16acd964d47c85e9a144efd6988d571" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Caruachi</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Venezuela<br>         <b>Río:</b> Río Caroní<br>         <b>Año Inauguración:</b> 2006<br>         <b>Capacidad Total:</b> 2,160.0 MW<br>         <b>Prod. Anual Máx:</b> 12.9 TWh<br>         <b>Área Inundada:</b> 52 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">74.8%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
+                popup_353bb264ea28f4760f593f0b82b92f28.setContent(html_f16acd964d47c85e9a144efd6988d571);
             
         
 
-        circle_marker_27595e862eb60053c1e7fb28599dff00.bindPopup(popup_4f4b19fdf742375f93b4c318e7ba4cd7)
+        circle_marker_57889c48184a6ef30f3b17e13cf3394c.bindPopup(popup_353bb264ea28f4760f593f0b82b92f28)
         ;
 
         
     
     
-            circle_marker_27595e862eb60053c1e7fb28599dff00.bindTooltip(
+            circle_marker_57889c48184a6ef30f3b17e13cf3394c.bindTooltip(
                 `<div>
                      Represa de Caruachi (74.8%)
                  </div>`,
@@ -693,30 +713,30 @@
             );
         
     
-            var circle_marker_bc8c6583cdef213903e722a46b47d008 = L.circleMarker(
+            var circle_marker_2b3d06eeee5b649dd73ac5572070bf9c = L.circleMarker(
                 [-27.482, -56.737],
-                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.23498961879738, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.23498961879738, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_49a38bbb7bb274f93c3019e8b1f0ac5c = L.popup({
+        var popup_53953c17f92a4fb9b8e5f1960f7e0b2c = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_bdfe6754cde8fe520334aafde0867a99 = $(`<div id="html_bdfe6754cde8fe520334aafde0867a99" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Presa de Yacyretá</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Argentina / Paraguay<br>         <b>Río:</b> Río Paraná<br>         <b>Año Inauguración:</b> 1998<br>         <b>Capacidad Total:</b> 4,050.0 MW<br>         <b>Prod. Anual Máx:</b> 19.2 TWh<br>         <b>Área Inundada:</b> 1,600 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid green;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:green;">89.6%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> EBY Boletín (82.72 mSNM)</small>         </div>     </div>     </div>`)[0];
-                popup_49a38bbb7bb274f93c3019e8b1f0ac5c.setContent(html_bdfe6754cde8fe520334aafde0867a99);
+                var html_dbf268576fd308e1faba751c63a736aa = $(`<div id="html_dbf268576fd308e1faba751c63a736aa" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Presa de Yacyretá</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Argentina / Paraguay<br>         <b>Río:</b> Río Paraná<br>         <b>Año Inauguración:</b> 1998<br>         <b>Capacidad Total:</b> 4,050.0 MW<br>         <b>Prod. Anual Máx:</b> 19.2 TWh<br>         <b>Área Inundada:</b> 1,600 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #E74C3C;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#E74C3C;">89.6%</span><br>             <small><b>Estado:</b> Riesgo Desbordamiento (>85%)</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> EBY Boletín (82.72 mSNM)</small>         </div>     </div>     </div>`)[0];
+                popup_53953c17f92a4fb9b8e5f1960f7e0b2c.setContent(html_dbf268576fd308e1faba751c63a736aa);
             
         
 
-        circle_marker_bc8c6583cdef213903e722a46b47d008.bindPopup(popup_49a38bbb7bb274f93c3019e8b1f0ac5c)
+        circle_marker_2b3d06eeee5b649dd73ac5572070bf9c.bindPopup(popup_53953c17f92a4fb9b8e5f1960f7e0b2c)
         ;
 
         
     
     
-            circle_marker_bc8c6583cdef213903e722a46b47d008.bindTooltip(
+            circle_marker_2b3d06eeee5b649dd73ac5572070bf9c.bindTooltip(
                 `<div>
                      Presa de Yacyretá (89.6%)
                  </div>`,
@@ -726,30 +746,30 @@
             );
         
     
-            var circle_marker_93d049ac00fe4f45c60b70318a349639 = L.circleMarker(
+            var circle_marker_04a82fcc4836c01f088fcdca07d8b90b = L.circleMarker(
                 [-31.275, -57.938],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.268168242576536, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.268168242576536, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_78ed55d48bb271d367f5ebdc5a2ddd58 = L.popup({
+        var popup_660f1122ae9f030d503b715314273f7a = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_4ad703acbcd23d15990ea23b489d720b = $(`<div id="html_4ad703acbcd23d15990ea23b489d720b" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Salto Grande</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Argentina / Uruguay<br>         <b>Río:</b> Río Uruguay<br>         <b>Año Inauguración:</b> 1979<br>         <b>Capacidad Total:</b> 1,890.0 MW<br>         <b>Prod. Anual Máx:</b> 8.5 TWh<br>         <b>Área Inundada:</b> 783 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">64.2%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
-                popup_78ed55d48bb271d367f5ebdc5a2ddd58.setContent(html_4ad703acbcd23d15990ea23b489d720b);
+                var html_fe142af17824eb290c51612f30490293 = $(`<div id="html_fe142af17824eb290c51612f30490293" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Salto Grande</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Argentina / Uruguay<br>         <b>Río:</b> Río Uruguay<br>         <b>Año Inauguración:</b> 1979<br>         <b>Capacidad Total:</b> 1,890.0 MW<br>         <b>Prod. Anual Máx:</b> 8.5 TWh<br>         <b>Área Inundada:</b> 783 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">64.2%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
+                popup_660f1122ae9f030d503b715314273f7a.setContent(html_fe142af17824eb290c51612f30490293);
             
         
 
-        circle_marker_93d049ac00fe4f45c60b70318a349639.bindPopup(popup_78ed55d48bb271d367f5ebdc5a2ddd58)
+        circle_marker_04a82fcc4836c01f088fcdca07d8b90b.bindPopup(popup_660f1122ae9f030d503b715314273f7a)
         ;
 
         
     
     
-            circle_marker_93d049ac00fe4f45c60b70318a349639.bindTooltip(
+            circle_marker_04a82fcc4836c01f088fcdca07d8b90b.bindTooltip(
                 `<div>
                      Represa de Salto Grande (64.2%)
                  </div>`,
@@ -759,30 +779,30 @@
             );
         
     
-            var circle_marker_e4e9a25e7cda50aa7e27dce1e8bd300e = L.circleMarker(
+            var circle_marker_65c17ac247ab842d59c61b98a065cb56 = L.circleMarker(
                 [-40.078, -70.013],
-                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.60178968447123, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.60178968447123, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_a33df59049e800173b5ea7e930826d40 = L.popup({
+        var popup_de8f53296a51e0093c48047ad0b075fd = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_e45ce3ee2578db5fa0eb810dcaf2f9fa = $(`<div id="html_e45ce3ee2578db5fa0eb810dcaf2f9fa" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Embalse Piedra del Águila</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Argentina<br>         <b>Río:</b> Río Limay<br>         <b>Año Inauguración:</b> 1993<br>         <b>Capacidad Total:</b> 1,400.0 MW<br>         <b>Prod. Anual Máx:</b> 5.5 TWh<br>         <b>Área Inundada:</b> 292 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid green;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:green;">72.1%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
-                popup_a33df59049e800173b5ea7e930826d40.setContent(html_e45ce3ee2578db5fa0eb810dcaf2f9fa);
+                var html_c9f2f693118f54522d27d0dc0366d394 = $(`<div id="html_c9f2f693118f54522d27d0dc0366d394" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Embalse Piedra del Águila</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Argentina<br>         <b>Río:</b> Río Limay<br>         <b>Año Inauguración:</b> 1993<br>         <b>Capacidad Total:</b> 1,400.0 MW<br>         <b>Prod. Anual Máx:</b> 5.5 TWh<br>         <b>Área Inundada:</b> 292 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">72.1%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
+                popup_de8f53296a51e0093c48047ad0b075fd.setContent(html_c9f2f693118f54522d27d0dc0366d394);
             
         
 
-        circle_marker_e4e9a25e7cda50aa7e27dce1e8bd300e.bindPopup(popup_a33df59049e800173b5ea7e930826d40)
+        circle_marker_65c17ac247ab842d59c61b98a065cb56.bindPopup(popup_de8f53296a51e0093c48047ad0b075fd)
         ;
 
         
     
     
-            circle_marker_e4e9a25e7cda50aa7e27dce1e8bd300e.bindTooltip(
+            circle_marker_65c17ac247ab842d59c61b98a065cb56.bindTooltip(
                 `<div>
                      Embalse Piedra del Águila (72.1%)
                  </div>`,
@@ -792,30 +812,30 @@
             );
         
     
-            var circle_marker_b788380a986e32045c9865f292cd1ef0 = L.circleMarker(
+            var circle_marker_071abc8286f01a901dfe754a1076564e = L.circleMarker(
                 [-39.273, -68.751],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.280659975080933, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.280659975080933, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_7de893d763f14c70264818cfc6ce004a = L.popup({
+        var popup_f7fcffae762293017e4141a004fcb7dd = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_771059e9dba53c92519275beb302ee5a = $(`<div id="html_771059e9dba53c92519275beb302ee5a" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Embalse El Chocón</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Argentina<br>         <b>Río:</b> Río Limay<br>         <b>Año Inauguración:</b> 1973<br>         <b>Capacidad Total:</b> 1,200.0 MW<br>         <b>Prod. Anual Máx:</b> 3.3 TWh<br>         <b>Área Inundada:</b> 825 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">69.8%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
-                popup_7de893d763f14c70264818cfc6ce004a.setContent(html_771059e9dba53c92519275beb302ee5a);
+                var html_cc54e0e4eb67eb9045790b4cead36f91 = $(`<div id="html_cc54e0e4eb67eb9045790b4cead36f91" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Embalse El Chocón</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Argentina<br>         <b>Río:</b> Río Limay<br>         <b>Año Inauguración:</b> 1973<br>         <b>Capacidad Total:</b> 1,200.0 MW<br>         <b>Prod. Anual Máx:</b> 3.3 TWh<br>         <b>Área Inundada:</b> 825 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">69.8%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
+                popup_f7fcffae762293017e4141a004fcb7dd.setContent(html_cc54e0e4eb67eb9045790b4cead36f91);
             
         
 
-        circle_marker_b788380a986e32045c9865f292cd1ef0.bindPopup(popup_7de893d763f14c70264818cfc6ce004a)
+        circle_marker_071abc8286f01a901dfe754a1076564e.bindPopup(popup_f7fcffae762293017e4141a004fcb7dd)
         ;
 
         
     
     
-            circle_marker_b788380a986e32045c9865f292cd1ef0.bindTooltip(
+            circle_marker_071abc8286f01a901dfe754a1076564e.bindTooltip(
                 `<div>
                      Embalse El Chocón (69.8%)
                  </div>`,
@@ -825,30 +845,30 @@
             );
         
     
-            var circle_marker_6ece9d59e26fe30a4990d58606204524 = L.circleMarker(
+            var circle_marker_94a368c1c8e666d3c5c89c8edf8db8aa = L.circleMarker(
                 [7.135, -75.664],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.840140096763038, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.840140096763038, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_25743ec4dba35fde047a8032f1d7969a = L.popup({
+        var popup_c76c9cb62d948866e58bdbd780d2b17e = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_71731acdcd99612892ecdc2a25e04500 = $(`<div id="html_71731acdcd99612892ecdc2a25e04500" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Hidroituango</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Colombia<br>         <b>Río:</b> Río Cauca<br>         <b>Año Inauguración:</b> 2018<br>         <b>Capacidad Total:</b> 2,400.0 MW<br>         <b>Prod. Anual Máx:</b> 13.5 TWh<br>         <b>Área Inundada:</b> 38 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_25743ec4dba35fde047a8032f1d7969a.setContent(html_71731acdcd99612892ecdc2a25e04500);
+                var html_f37316c2d6a4bc7b90a2c62c0f16d5a7 = $(`<div id="html_f37316c2d6a4bc7b90a2c62c0f16d5a7" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Hidroituango</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Colombia<br>         <b>Río:</b> Río Cauca<br>         <b>Año Inauguración:</b> 2018<br>         <b>Capacidad Total:</b> 2,400.0 MW<br>         <b>Prod. Anual Máx:</b> 13.5 TWh<br>         <b>Área Inundada:</b> 38 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_c76c9cb62d948866e58bdbd780d2b17e.setContent(html_f37316c2d6a4bc7b90a2c62c0f16d5a7);
             
         
 
-        circle_marker_6ece9d59e26fe30a4990d58606204524.bindPopup(popup_25743ec4dba35fde047a8032f1d7969a)
+        circle_marker_94a368c1c8e666d3c5c89c8edf8db8aa.bindPopup(popup_c76c9cb62d948866e58bdbd780d2b17e)
         ;
 
         
     
     
-            circle_marker_6ece9d59e26fe30a4990d58606204524.bindTooltip(
+            circle_marker_94a368c1c8e666d3c5c89c8edf8db8aa.bindTooltip(
                 `<div>
                      Hidroituango (60.0%)
                  </div>`,
@@ -858,30 +878,30 @@
             );
         
     
-            var circle_marker_f9f08c53f88853ca23de3a8ee42fc694 = L.circleMarker(
+            var circle_marker_ff8cce99b48ca5a94b59484e5b467c3c = L.circleMarker(
                 [4.723, -73.508],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.364356493330536, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 13.364356493330536, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_a0d1c96901e8d358cfddfc954e4113fa = L.popup({
+        var popup_b1cf6868f7db9580f2a99bfa56a832e7 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_37e54477e46f62277ac9a0c3b73e7196 = $(`<div id="html_37e54477e46f62277ac9a0c3b73e7196" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica del Guavio</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Colombia<br>         <b>Río:</b> Río Guavio<br>         <b>Año Inauguración:</b> 1989<br>         <b>Capacidad Total:</b> 1,250.0 MW<br>         <b>Prod. Anual Máx:</b> 5.8 TWh<br>         <b>Área Inundada:</b> 15 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_a0d1c96901e8d358cfddfc954e4113fa.setContent(html_37e54477e46f62277ac9a0c3b73e7196);
+                var html_b2771332b3ec03fde0f25ebe7c5fbf62 = $(`<div id="html_b2771332b3ec03fde0f25ebe7c5fbf62" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica del Guavio</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Colombia<br>         <b>Río:</b> Río Guavio<br>         <b>Año Inauguración:</b> 1989<br>         <b>Capacidad Total:</b> 1,250.0 MW<br>         <b>Prod. Anual Máx:</b> 5.8 TWh<br>         <b>Área Inundada:</b> 15 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_b1cf6868f7db9580f2a99bfa56a832e7.setContent(html_b2771332b3ec03fde0f25ebe7c5fbf62);
             
         
 
-        circle_marker_f9f08c53f88853ca23de3a8ee42fc694.bindPopup(popup_a0d1c96901e8d358cfddfc954e4113fa)
+        circle_marker_ff8cce99b48ca5a94b59484e5b467c3c.bindPopup(popup_b1cf6868f7db9580f2a99bfa56a832e7)
         ;
 
         
     
     
-            circle_marker_f9f08c53f88853ca23de3a8ee42fc694.bindTooltip(
+            circle_marker_ff8cce99b48ca5a94b59484e5b467c3c.bindTooltip(
                 `<div>
                      Central Hidroeléctrica del Guavio (60.0%)
                  </div>`,
@@ -891,30 +911,30 @@
             );
         
     
-            var circle_marker_2fabb1fe772a9861e6251a14359bb2c5 = L.circleMarker(
+            var circle_marker_41c0ace5c57345759ef3ced226375e51 = L.circleMarker(
                 [6.232, -75.161],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.881561568016082, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.881561568016082, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_8acc2e3b1628e09167657174f903d674 = L.popup({
+        var popup_cd3fba78977405f0ca405c5d5c89a320 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_139cd9fc2aba214c1659dd24e36e3a2e = $(`<div id="html_139cd9fc2aba214c1659dd24e36e3a2e" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Embalse El Peñol - Guatapé</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Colombia<br>         <b>Río:</b> Río Nare<br>         <b>Año Inauguración:</b> 1972<br>         <b>Capacidad Total:</b> 560.0 MW<br>         <b>Prod. Anual Máx:</b> 2.7 TWh<br>         <b>Área Inundada:</b> 64 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
-                popup_8acc2e3b1628e09167657174f903d674.setContent(html_139cd9fc2aba214c1659dd24e36e3a2e);
+                var html_ab0795c691354ef0ab0ec16ca7a8a570 = $(`<div id="html_ab0795c691354ef0ab0ec16ca7a8a570" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Embalse El Peñol - Guatapé</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Colombia<br>         <b>Río:</b> Río Nare<br>         <b>Año Inauguración:</b> 1972<br>         <b>Capacidad Total:</b> 560.0 MW<br>         <b>Prod. Anual Máx:</b> 2.7 TWh<br>         <b>Área Inundada:</b> 64 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">60.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital Backup</small>         </div>     </div>     </div>`)[0];
+                popup_cd3fba78977405f0ca405c5d5c89a320.setContent(html_ab0795c691354ef0ab0ec16ca7a8a570);
             
         
 
-        circle_marker_2fabb1fe772a9861e6251a14359bb2c5.bindPopup(popup_8acc2e3b1628e09167657174f903d674)
+        circle_marker_41c0ace5c57345759ef3ced226375e51.bindPopup(popup_cd3fba78977405f0ca405c5d5c89a320)
         ;
 
         
     
     
-            circle_marker_2fabb1fe772a9861e6251a14359bb2c5.bindTooltip(
+            circle_marker_41c0ace5c57345759ef3ced226375e51.bindTooltip(
                 `<div>
                      Embalse El Peñol - Guatapé (60.0%)
                  </div>`,
@@ -924,30 +944,30 @@
             );
         
     
-            var circle_marker_e3ddf1081c827a396dde0131ced2c69a = L.circleMarker(
+            var circle_marker_c5e42be64b138142f13da412abc1e817 = L.circleMarker(
                 [-12.213, -74.654],
-                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.933762295140674, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.933762295140674, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_819d09a4b17ce28abebf1e93a8c76edf = L.popup({
+        var popup_fff157ec177acb1990dc8d87f9a45c9d = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_e22fed9dcadcba3998384af3088a90a3 = $(`<div id="html_e22fed9dcadcba3998384af3088a90a3" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Complejo Hidroeléctrico del Mantaro</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Perú<br>         <b>Río:</b> Río Mantaro<br>         <b>Año Inauguración:</b> 1973<br>         <b>Capacidad Total:</b> 1,008.0 MW<br>         <b>Prod. Anual Máx:</b> 7.0 TWh<br>         <b>Área Inundada:</b> N/D km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid green;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:green;">81.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
-                popup_819d09a4b17ce28abebf1e93a8c76edf.setContent(html_e22fed9dcadcba3998384af3088a90a3);
+                var html_293de11a16c6e0684c750496c12cc4a0 = $(`<div id="html_293de11a16c6e0684c750496c12cc4a0" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Complejo Hidroeléctrico del Mantaro</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Perú<br>         <b>Río:</b> Río Mantaro<br>         <b>Año Inauguración:</b> 1973<br>         <b>Capacidad Total:</b> 1,008.0 MW<br>         <b>Prod. Anual Máx:</b> 7.0 TWh<br>         <b>Área Inundada:</b> N/D km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">81.0%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
+                popup_fff157ec177acb1990dc8d87f9a45c9d.setContent(html_293de11a16c6e0684c750496c12cc4a0);
             
         
 
-        circle_marker_e3ddf1081c827a396dde0131ced2c69a.bindPopup(popup_819d09a4b17ce28abebf1e93a8c76edf)
+        circle_marker_c5e42be64b138142f13da412abc1e817.bindPopup(popup_fff157ec177acb1990dc8d87f9a45c9d)
         ;
 
         
     
     
-            circle_marker_e3ddf1081c827a396dde0131ced2c69a.bindTooltip(
+            circle_marker_c5e42be64b138142f13da412abc1e817.bindTooltip(
                 `<div>
                      Complejo Hidroeléctrico del Mantaro (81.0%)
                  </div>`,
@@ -957,30 +977,30 @@
             );
         
     
-            var circle_marker_2fccdbfd551ee14c0b4c2b96e7659055 = L.circleMarker(
+            var circle_marker_7e1c1ceb480af35b85a1616bdef07c1c = L.circleMarker(
                 [-37.998, -71.552],
-                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.235592778363621, "stroke": true, "weight": 3}
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.235592778363621, "stroke": true, "weight": 3}
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
         
     
-        var popup_66c36d436f01597f1d3ceb2f04c9742c = L.popup({
+        var popup_11d2eb00e8c18a1f3cda869ba3f57b25 = L.popup({
   "maxWidth": 300,
 });
 
         
             
-                var html_9935fb96f16942c8455e0f8aae368df9 = $(`<div id="html_9935fb96f16942c8455e0f8aae368df9" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica Ralco</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Chile<br>         <b>Río:</b> Río Biobío<br>         <b>Año Inauguración:</b> 2004<br>         <b>Capacidad Total:</b> 690.0 MW<br>         <b>Prod. Anual Máx:</b> 3.1 TWh<br>         <b>Área Inundada:</b> 34 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">55.4%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
-                popup_66c36d436f01597f1d3ceb2f04c9742c.setContent(html_9935fb96f16942c8455e0f8aae368df9);
+                var html_488b482f0e9a837007a413e4de2760b1 = $(`<div id="html_488b482f0e9a837007a413e4de2760b1" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica Ralco</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Chile<br>         <b>Río:</b> Río Biobío<br>         <b>Año Inauguración:</b> 2004<br>         <b>Capacidad Total:</b> 690.0 MW<br>         <b>Prod. Anual Máx:</b> 3.1 TWh<br>         <b>Área Inundada:</b> 34 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid #27AE60;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:#27AE60;">55.4%</span><br>             <small><b>Estado:</b> Condición Óptima</small><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI / CTM</small>         </div>     </div>     </div>`)[0];
+                popup_11d2eb00e8c18a1f3cda869ba3f57b25.setContent(html_488b482f0e9a837007a413e4de2760b1);
             
         
 
-        circle_marker_2fccdbfd551ee14c0b4c2b96e7659055.bindPopup(popup_66c36d436f01597f1d3ceb2f04c9742c)
+        circle_marker_7e1c1ceb480af35b85a1616bdef07c1c.bindPopup(popup_11d2eb00e8c18a1f3cda869ba3f57b25)
         ;
 
         
     
     
-            circle_marker_2fccdbfd551ee14c0b4c2b96e7659055.bindTooltip(
+            circle_marker_7e1c1ceb480af35b85a1616bdef07c1c.bindTooltip(
                 `<div>
                      Central Hidroeléctrica Ralco (55.4%)
                  </div>`,
@@ -990,27 +1010,27 @@
             );
         
     
-            var layer_control_d84224d0bb262d42c7cc4e2237acb6d1_layers = {
+            var layer_control_3c5a59ac978b3f8561001cefbd2f1d21_layers = {
                 base_layers : {
-                    "openstreetmap" : tile_layer_5d658cde486f8c6328326bf1d19f22c4,
-                    "Vista Satelital (Esri)" : tile_layer_26e959a07f58ebad987de3c5b363c9b3,
+                    "openstreetmap" : tile_layer_5ab7b51b8855af32de9fecd6ce97e5c5,
+                    "Vista Satelital (Esri)" : tile_layer_ccb1979f8cc4de2f733d4a46101fc742,
                 },
                 overlays :  {
                 },
             };
-            let layer_control_d84224d0bb262d42c7cc4e2237acb6d1 = L.control.layers(
-                layer_control_d84224d0bb262d42c7cc4e2237acb6d1_layers.base_layers,
-                layer_control_d84224d0bb262d42c7cc4e2237acb6d1_layers.overlays,
+            let layer_control_3c5a59ac978b3f8561001cefbd2f1d21 = L.control.layers(
+                layer_control_3c5a59ac978b3f8561001cefbd2f1d21_layers.base_layers,
+                layer_control_3c5a59ac978b3f8561001cefbd2f1d21_layers.overlays,
                 {
   "position": "topright",
   "collapsed": true,
   "autoZIndex": true,
 }
-            ).addTo(map_df17903e91a922c4e7ae37e0405a1a16);
+            ).addTo(map_d669f4816d325dc650a619f73b37156e);
 
         
     
-            var measure_control_6068b7ff975f8c6decca6d7e1391f587 = new L.Control.Measure(
+            var measure_control_e7764ef286d7fa845ce964c0ec1850bd = new L.Control.Measure(
                 {
   "position": "topright",
   "primaryLengthUnit": "meters",
@@ -1018,7 +1038,7 @@
   "primaryAreaUnit": "sqmeters",
   "secondaryAreaUnit": "acres",
 });
-            map_df17903e91a922c4e7ae37e0405a1a16.addControl(measure_control_6068b7ff975f8c6decca6d7e1391f587);
+            map_d669f4816d325dc650a619f73b37156e.addControl(measure_control_e7764ef286d7fa845ce964c0ec1850bd);
 
             // Workaround for using this plugin with Leaflet>=1.8.0
             // https://github.com/ljagis/leaflet-measure/issues/171

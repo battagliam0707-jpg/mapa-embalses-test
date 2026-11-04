@@ -18,7 +18,9 @@
         "capacidad_mw": 14000.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -38,7 +40,9 @@
         "capacidad_mw": 11233.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -58,7 +62,9 @@
         "capacidad_mw": 8370.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -78,7 +84,9 @@
         "capacidad_mw": 4279.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -98,7 +106,9 @@
         "capacidad_mw": 3750.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -118,7 +128,9 @@
         "capacidad_mw": 3568.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -138,7 +150,9 @@
         "capacidad_mw": 3200.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -158,7 +172,9 @@
         "capacidad_mw": 3162.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -178,7 +194,9 @@
         "capacidad_mw": 10200.0,
         "volumen_pct": 58.2,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Altimetría Satelital DAHITI / CTM"
+        "fuente_datos": "Altimetría Satelital DAHITI / CTM",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -198,7 +216,9 @@
         "capacidad_mw": 3167.5,
         "volumen_pct": 78.5,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Altimetría Satelital DAHITI / CTM"
+        "fuente_datos": "Altimetría Satelital DAHITI / CTM",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -218,7 +238,9 @@
         "capacidad_mw": 2160.0,
         "volumen_pct": 74.8,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Altimetría Satelital DAHITI / CTM"
+        "fuente_datos": "Altimetría Satelital DAHITI / CTM",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -238,7 +260,9 @@
         "capacidad_mw": 4050.0,
         "volumen_pct": 89.6,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "EBY Boletín (82.72 mSNM)"
+        "fuente_datos": "EBY Boletín (82.72 mSNM)",
+        "color_hex": "#E74C3C",
+        "estado_desc": "Riesgo Desbordamiento (>85%)"
       }
     },
     {
@@ -258,7 +282,9 @@
         "capacidad_mw": 1890.0,
         "volumen_pct": 64.2,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Altimetría Satelital DAHITI / CTM"
+        "fuente_datos": "Altimetría Satelital DAHITI / CTM",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -278,7 +304,9 @@
         "capacidad_mw": 1400.0,
         "volumen_pct": 72.1,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Altimetría Satelital DAHITI / CTM"
+        "fuente_datos": "Altimetría Satelital DAHITI / CTM",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -298,7 +326,9 @@
         "capacidad_mw": 1200.0,
         "volumen_pct": 69.8,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Altimetría Satelital DAHITI / CTM"
+        "fuente_datos": "Altimetría Satelital DAHITI / CTM",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -318,7 +348,9 @@
         "capacidad_mw": 2400.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -338,7 +370,9 @@
         "capacidad_mw": 1250.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -358,7 +392,9 @@
         "capacidad_mw": 560.0,
         "volumen_pct": 60.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Telemetría Satelital Backup"
+        "fuente_datos": "Telemetría Satelital Backup",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -378,7 +414,9 @@
         "capacidad_mw": 1008.0,
         "volumen_pct": 81.0,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Altimetría Satelital DAHITI / CTM"
+        "fuente_datos": "Altimetría Satelital DAHITI / CTM",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     },
     {
@@ -398,7 +436,9 @@
         "capacidad_mw": 690.0,
         "volumen_pct": 55.4,
         "fecha_actualizacion": "2026-11-04",
-        "fuente_datos": "Altimetría Satelital DAHITI / CTM"
+        "fuente_datos": "Altimetría Satelital DAHITI / CTM",
+        "color_hex": "#27AE60",
+        "estado_desc": "Condición Óptima"
       }
     }
   ]
