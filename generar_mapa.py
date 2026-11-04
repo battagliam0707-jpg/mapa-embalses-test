@@ -142,21 +142,30 @@ for p in represas:
 
 df = pd.DataFrame(lista_procesada)
 
-# --- MAPA BASE CON ESRI TOPOGRAPHY COMO PRESET ---
+# --- MAPA BASE CONFIGURADO SIN CAPAS POR DEFECTO ---
 mapa = folium.Map(
     location=[-15.0, -65.0],
     zoom_start=4,
-    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-    attr="Esri World Topo Map",
-    name="Esri Topografía",
+    tiles=None,
     control_scale=True
 )
 
-# Capa secundaria Satelital opcional
+# 1. Capa Predeterminada: ESRI Topográfico Claro
+folium.TileLayer(
+    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+    attr="Esri World Topo Map",
+    name="Esri Topografía (Claro)",
+    overlay=False,
+    control=True
+).add_to(mapa)
+
+# 2. Capa Secundaria Opcional: ESRI Satelital
 folium.TileLayer(
     tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attr="Esri World Imagery",
-    name="Vista Satelital (Esri)"
+    name="Vista Satelital (Esri)",
+    overlay=False,
+    control=True
 ).add_to(mapa)
 
 # --- LÍMITES FRONTERIZOS EN NEGRO SIN NOMBRES ---
@@ -210,8 +219,9 @@ for _, r in df.iterrows():
         fill_opacity=0.8
     ).add_to(mapa)
 
-folium.LayerControl().add_to(mapa)
-mapa.add_child(MeasureControl())
+# --- CONTROLES UBICADOS ABAJO A LA DERECHA (BOTTOMRIGHT) ---
+folium.LayerControl(position="bottomright").add_to(mapa)
+mapa.add_child(MeasureControl(position="bottomright"))
 
 # --- GENERACIÓN DE CAPA GEOJSON ---
 geojson_data = {"type": "FeatureCollection", "features": []}
@@ -231,11 +241,17 @@ for _, r in df.iterrows():
 with open("embalses.geojson", "w", encoding="utf-8") as f:
     json.dump(geojson_data, f, ensure_ascii=False, indent=2)
 
-# --- INYECCIÓN DE DASHBOARD Y WIDGETS INTERACTIVOS ---
+# --- INYECCIÓN DE DASHBOARD Y ESTILOS CSS DE UBICACIÓN ---
 json_represas_js = json.dumps(lista_procesada, ensure_ascii=False)
 
 widget_html = f"""
 <style>
+    /* Ubicar los controles de Leaflet abajo a la derecha a 15px (~1cm) del borde inferior */
+    .leaflet-bottom.leaflet-right {{
+        bottom: 15px !important;
+        right: 15px !important;
+    }}
+
     .dashboard-panel {{
         position: fixed;
         top: 10px;
@@ -478,4 +494,4 @@ except FileNotFoundError:
     df_historico = df
 
 df_historico.to_excel(archivo_excel, index=False)
-print("Proceso completado con éxito: Esri Topografía predeterminada y límites negros sin nombres agregados.")
+print("Proceso completado con éxito: Mapa Topográfico Claro predeterminado y controles reubicados abajo a la derecha.")
