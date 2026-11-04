@@ -24,7 +24,7 @@ jobs:
 
       - name: Instalar Dependencias
         run: |
-          pip install pandas folium requests beautifulsoup4
+          pip install pandas folium requests beautifulsoup4 openpyxl
 
       - name: Ejecutar Scrapers y Generar HTML / GeoJSON
         run: |
