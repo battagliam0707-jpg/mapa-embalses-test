@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_7d10667716e88e9939c46f3c69235457 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_7d10667716e88e9939c46f3c69235457" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_7d10667716e88e9939c46f3c69235457 = L.map(
+                "map_7d10667716e88e9939c46f3c69235457",
+                {
+                    center: [-12.0, -60.0],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 4,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_7d10667716e88e9939c46f3c69235457);
+
+            
+
+        
+    
+            var tile_layer_953bf65b5ec9f9d04742ced9bb3d91d6 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_953bf65b5ec9f9d04742ced9bb3d91d6.addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+            var tile_layer_322a9a2140a65648e11fae706d4a0aab = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Esri World Imagery",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_322a9a2140a65648e11fae706d4a0aab.addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+            var circle_marker_708467025bf5e66f514796123c938d8a = L.circleMarker(
+                [-25.412, -54.588],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 20.484911629978157, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_9e7e35b6f3b377f67de141c5bf692744 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_bb4c6d46018cf03711426d732f3f2093 = $(`<div id="html_bb4c6d46018cf03711426d732f3f2093" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Itaipú</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil / Paraguay<br>         <b>Río:</b> Río Paraná<br>         <b>Año Inauguración:</b> 1984/91/2003<br>         <b>Capacidad Total:</b> 14,000.0 MW<br>         <b>Prod. Anual Máx:</b> 98.6 TWh<br>         <b>Área Inundada:</b> 1,350 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital</small>         </div>     </div>     </div>`)[0];
+                popup_9e7e35b6f3b377f67de141c5bf692744.setContent(html_bb4c6d46018cf03711426d732f3f2093);
+            
+        
+
+        circle_marker_708467025bf5e66f514796123c938d8a.bindPopup(popup_9e7e35b6f3b377f67de141c5bf692744)
+        ;
+
+        
+    
+    
+            circle_marker_708467025bf5e66f514796123c938d8a.bindTooltip(
+                `<div>
+                     Represa de Itaipú (60.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_15a11062c5a65a8c263d0068be9daeb0 = L.circleMarker(
+                [7.766, -62.998],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 19.25586425490707, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_d7c3f184af2e034afe76ca9ad47c7904 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_49b89f4c50aa0da2754f957302cda181 = $(`<div id="html_49b89f4c50aa0da2754f957302cda181" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Central Hidroeléctrica Simón Bolívar (Guri)</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Venezuela<br>         <b>Río:</b> Río Caroní<br>         <b>Año Inauguración:</b> 1986<br>         <b>Capacidad Total:</b> 10,200.0 MW<br>         <b>Prod. Anual Máx:</b> 46.0 TWh<br>         <b>Área Inundada:</b> 4,250 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">58.2%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI</small>         </div>     </div>     </div>`)[0];
+                popup_d7c3f184af2e034afe76ca9ad47c7904.setContent(html_49b89f4c50aa0da2754f957302cda181);
+            
+        
+
+        circle_marker_15a11062c5a65a8c263d0068be9daeb0.bindPopup(popup_d7c3f184af2e034afe76ca9ad47c7904)
+        ;
+
+        
+    
+    
+            circle_marker_15a11062c5a65a8c263d0068be9daeb0.bindTooltip(
+                `<div>
+                     Central Hidroeléctrica Simón Bolívar (Guri) (58.2%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_44c238ed348b276c1dcff2c8835854e5 = L.circleMarker(
+                [-3.831, -49.648],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 18.54189406638283, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_21034b01e02d32cb74b31918b1210775 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_2e14b1394d25c6c762cd9579bcf0cdf4 = $(`<div id="html_2e14b1394d25c6c762cd9579bcf0cdf4" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Presa de Tucuruí</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Tocantins<br>         <b>Año Inauguración:</b> 1984<br>         <b>Capacidad Total:</b> 8,370.0 MW<br>         <b>Prod. Anual Máx:</b> 41.0 TWh<br>         <b>Área Inundada:</b> 3,014 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital</small>         </div>     </div>     </div>`)[0];
+                popup_21034b01e02d32cb74b31918b1210775.setContent(html_2e14b1394d25c6c762cd9579bcf0cdf4);
+            
+        
+
+        circle_marker_44c238ed348b276c1dcff2c8835854e5.bindPopup(popup_21034b01e02d32cb74b31918b1210775)
+        ;
+
+        
+    
+    
+            circle_marker_44c238ed348b276c1dcff2c8835854e5.bindTooltip(
+                `<div>
+                     Presa de Tucuruí (60.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_72873eb985d66096a4f8e2e06ddf7733 = L.circleMarker(
+                [-9.397, -38.214],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.393835526754025, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_cf91eee95511f7fb2aaf931f2f4ccd56 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_1904e8a638ec6e447784c78efc620224 = $(`<div id="html_1904e8a638ec6e447784c78efc620224" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Complejo Hidroeléctrico Paulo Afonso</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río São Francisco<br>         <b>Año Inauguración:</b> 1979<br>         <b>Capacidad Total:</b> 4,279.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> N/D km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital</small>         </div>     </div>     </div>`)[0];
+                popup_cf91eee95511f7fb2aaf931f2f4ccd56.setContent(html_1904e8a638ec6e447784c78efc620224);
+            
+        
+
+        circle_marker_72873eb985d66096a4f8e2e06ddf7733.bindPopup(popup_cf91eee95511f7fb2aaf931f2f4ccd56)
+        ;
+
+        
+    
+    
+            circle_marker_72873eb985d66096a4f8e2e06ddf7733.bindTooltip(
+                `<div>
+                     Complejo Hidroeléctrico Paulo Afonso (60.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_7495fa57f739c06c0677e85df72903c4 = L.circleMarker(
+                [-27.482, -56.737],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.23498961879738, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_3a6f6bd1d12bce145001a99746a428a1 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_924bb4b3433dd0a305a84f578f99e984 = $(`<div id="html_924bb4b3433dd0a305a84f578f99e984" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Presa de Yacyretá</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Argentina / Paraguay<br>         <b>Río:</b> Río Paraná<br>         <b>Año Inauguración:</b> 1998<br>         <b>Capacidad Total:</b> 4,050.0 MW<br>         <b>Prod. Anual Máx:</b> 19.2 TWh<br>         <b>Área Inundada:</b> 1,600 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid green;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:green;">89.6%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> EBY Boletín (82.72 mSNM)</small>         </div>     </div>     </div>`)[0];
+                popup_3a6f6bd1d12bce145001a99746a428a1.setContent(html_924bb4b3433dd0a305a84f578f99e984);
+            
+        
+
+        circle_marker_7495fa57f739c06c0677e85df72903c4.bindPopup(popup_3a6f6bd1d12bce145001a99746a428a1)
+        ;
+
+        
+    
+    
+            circle_marker_7495fa57f739c06c0677e85df72903c4.bindTooltip(
+                `<div>
+                     Presa de Yacyretá (89.6%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_18c510b942e68689eb4f0485640637af = L.circleMarker(
+                [-20.382, -51.365],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.58168730994366, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_93b2021a1fe927619732ae25bae2e758 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_57af77b28b89dbaa23f42b762fb79127 = $(`<div id="html_57af77b28b89dbaa23f42b762fb79127" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Ilha Solteira</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río Paraná<br>         <b>Año Inauguración:</b> 1974<br>         <b>Capacidad Total:</b> 3,200.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> N/D km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital</small>         </div>     </div>     </div>`)[0];
+                popup_93b2021a1fe927619732ae25bae2e758.setContent(html_57af77b28b89dbaa23f42b762fb79127);
+            
+        
+
+        circle_marker_18c510b942e68689eb4f0485640637af.bindPopup(popup_93b2021a1fe927619732ae25bae2e758)
+        ;
+
+        
+    
+    
+            circle_marker_18c510b942e68689eb4f0485640637af.bindTooltip(
+                `<div>
+                     Represa de Ilha Solteira (60.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_84a4e0b4dce06d67dd0555c8862f8db6 = L.circleMarker(
+                [8.304, -62.668],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.554339177290238, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_3a7092ed0810b67f4290005fe2e14afa = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_ed75b95bc948e8572aae7518b570b131 = $(`<div id="html_ed75b95bc948e8572aae7518b570b131" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Las Macagua (I, II y III)</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Venezuela<br>         <b>Río:</b> Río Caroní<br>         <b>Año Inauguración:</b> 1961 / 2010<br>         <b>Capacidad Total:</b> 3,167.5 MW<br>         <b>Prod. Anual Máx:</b> 15.2 TWh<br>         <b>Área Inundada:</b> 47.4 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid green;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:green;">78.5%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI</small>         </div>     </div>     </div>`)[0];
+                popup_3a7092ed0810b67f4290005fe2e14afa.setContent(html_ed75b95bc948e8572aae7518b570b131);
+            
+        
+
+        circle_marker_84a4e0b4dce06d67dd0555c8862f8db6.bindPopup(popup_3a7092ed0810b67f4290005fe2e14afa)
+        ;
+
+        
+    
+    
+            circle_marker_84a4e0b4dce06d67dd0555c8862f8db6.bindTooltip(
+                `<div>
+                     Represa de Las Macagua (I, II y III) (78.5%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_81048badfe12f7cb2aef029250c34e48 = L.circleMarker(
+                [-9.625, -37.965],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.549691067107664, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_5e3405d85f4d4bf815e051d94dae0196 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_6e90464f21c0a33c357d2c69c72b290a = $(`<div id="html_6e90464f21c0a33c357d2c69c72b290a" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Presa de Xingó</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Brasil<br>         <b>Río:</b> Río São Francisco<br>         <b>Año Inauguración:</b> 1994/97<br>         <b>Capacidad Total:</b> 3,162.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> 60 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">60.0%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Telemetría Satelital</small>         </div>     </div>     </div>`)[0];
+                popup_5e3405d85f4d4bf815e051d94dae0196.setContent(html_6e90464f21c0a33c357d2c69c72b290a);
+            
+        
+
+        circle_marker_81048badfe12f7cb2aef029250c34e48.bindPopup(popup_5e3405d85f4d4bf815e051d94dae0196)
+        ;
+
+        
+    
+    
+            circle_marker_81048badfe12f7cb2aef029250c34e48.bindTooltip(
+                `<div>
+                     Presa de Xingó (60.0%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_81246d5b2672197d476eeac6de689322 = L.circleMarker(
+                [7.135, -75.664],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.840140096763038, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_43cd235a1a4c46fe65dd1169687f0105 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b1330c531bb052d410c2b9d634f312a8 = $(`<div id="html_b1330c531bb052d410c2b9d634f312a8" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Hidroituango</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Colombia<br>         <b>Río:</b> Río Cauca<br>         <b>Año Inauguración:</b> 2018<br>         <b>Capacidad Total:</b> 2,400.0 MW<br>         <b>Prod. Anual Máx:</b> N/D TWh<br>         <b>Área Inundada:</b> 3.8 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid orange;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:orange;">52.4%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> XM Colombia (Portal)</small>         </div>     </div>     </div>`)[0];
+                popup_43cd235a1a4c46fe65dd1169687f0105.setContent(html_b1330c531bb052d410c2b9d634f312a8);
+            
+        
+
+        circle_marker_81246d5b2672197d476eeac6de689322.bindPopup(popup_43cd235a1a4c46fe65dd1169687f0105)
+        ;
+
+        
+    
+    
+            circle_marker_81246d5b2672197d476eeac6de689322.bindTooltip(
+                `<div>
+                     Hidroituango (52.4%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_24b01f5d86be22abcea09c2d2fe5b4e0 = L.circleMarker(
+                [8.157, -62.798],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 14.583156876819755, "stroke": true, "weight": 3}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+        
+    
+        var popup_bc301c0bd8e473c5a3fadd3550f2d772 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_a81c736fb9429d2fa20a0099cfb39cdf = $(`<div id="html_a81c736fb9429d2fa20a0099cfb39cdf" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">         <h4 style="margin: 0 0 5px 0; color: #1B4F72;"><b>Represa de Caruachi</b></h4>         <hr style="margin: 4px 0;">         <b>País:</b> Venezuela<br>         <b>Río:</b> Río Caroní<br>         <b>Año Inauguración:</b> 2006<br>         <b>Capacidad Total:</b> 2,160.0 MW<br>         <b>Prod. Anual Máx:</b> 12.9 TWh<br>         <b>Área Inundada:</b> 52 km²         <div style="margin-top: 8px; padding: 6px; background-color: #F4F6F6; border-left: 4px solid green;">             <b>Nivel Actual:</b> <span style="font-size: 14px; font-weight: bold; color:green;">74.8%</span><br>             <small><b>Fecha:</b> 2026-11-04</small><br>             <small><b>Origen:</b> Altimetría Satelital DAHITI</small>         </div>     </div>     </div>`)[0];
+                popup_bc301c0bd8e473c5a3fadd3550f2d772.setContent(html_a81c736fb9429d2fa20a0099cfb39cdf);
+            
+        
+
+        circle_marker_24b01f5d86be22abcea09c2d2fe5b4e0.bindPopup(popup_bc301c0bd8e473c5a3fadd3550f2d772)
+        ;
+
+        
+    
+    
+            circle_marker_24b01f5d86be22abcea09c2d2fe5b4e0.bindTooltip(
+                `<div>
+                     Represa de Caruachi (74.8%)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var layer_control_9c334e76c3f98f8032f78cba2c493cbd_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_953bf65b5ec9f9d04742ced9bb3d91d6,
+                    "Vista Satelital (Esri)" : tile_layer_322a9a2140a65648e11fae706d4a0aab,
+                },
+                overlays :  {
+                },
+            };
+            let layer_control_9c334e76c3f98f8032f78cba2c493cbd = L.control.layers(
+                layer_control_9c334e76c3f98f8032f78cba2c493cbd_layers.base_layers,
+                layer_control_9c334e76c3f98f8032f78cba2c493cbd_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_7d10667716e88e9939c46f3c69235457);
+
+        
+    
+            var measure_control_5bf86db07c034420a36eedc5dfa2b60a = new L.Control.Measure(
+                {
+  "position": "topright",
+  "primaryLengthUnit": "meters",
+  "secondaryLengthUnit": "miles",
+  "primaryAreaUnit": "sqmeters",
+  "secondaryAreaUnit": "acres",
+});
+            map_7d10667716e88e9939c46f3c69235457.addControl(measure_control_5bf86db07c034420a36eedc5dfa2b60a);
+
+            // Workaround for using this plugin with Leaflet>=1.8.0
+            // https://github.com/ljagis/leaflet-measure/issues/171
+            L.Control.Measure.include({
+                _setCaptureMarkerIcon: function () {
+                    // disable autopan
+                    this._captureMarker.options.autoPanOnFocus = false;
+                    // default function
+                    this._captureMarker.setIcon(
+                        L.divIcon({
+                            iconSize: this._map.getSize().multiplyBy(2)
+                        })
+                    );
+                },
+            });
+
+        
+</script>
+</html>
