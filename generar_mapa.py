@@ -191,3 +191,16 @@ with open("embalses.geojson", "w", encoding="utf-8") as f:
     json.dump(geojson_data, f, ensure_ascii=False, indent=2)
 
 print("Proceso finalizado: index.html y embalses.geojson generados con 20 represas.")
+
+# --- ACUMULACIÓN DE HISTÓRICO EN EXCEL ---
+archivo_excel = "historico_embalses.xlsx"
+
+try:
+    df_historico_previo = pd.read_excel(archivo_excel)
+    df_historico = pd.concat([df_historico_previo, df], ignore_index=True)
+    df_historico = df_historico.drop_duplicates(subset=["id", "fecha_actualizacion"], keep="last")
+except FileNotFoundError:
+    df_historico = df
+
+df_historico.to_excel(archivo_excel, index=False)
+print("Histórico actualizado en historico_embalses.xlsx")
