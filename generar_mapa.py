@@ -44,7 +44,8 @@ def obtener_datos_yacyreta_argentina():
 def obtener_datos_colombia_xm(codigo_xm):
     try:
         url_xm = "https://api.xm.com.co/servicios-publicos/v1/indicadores/volumen-util-reservorio"
-        resp = requests.get(url_xm, timeout=6)
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        resp = requests.get(url_xm, headers=headers, timeout=8)
         if resp.status_code == 200:
             datos = resp.json().get("datos", [])
             for d in datos:
@@ -142,33 +143,22 @@ for p in represas:
 
 df = pd.DataFrame(lista_procesada)
 
-# --- MAPA BASE CONFIGURADO SIN CAPAS POR DEFECTO ---
 mapa = folium.Map(
     location=[-15.0, -65.0],
     zoom_start=4,
-    tiles=None,
-    control_scale=True
-)
-
-# 1. Capa Predeterminada: ESRI Topográfico Claro
-folium.TileLayer(
     tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
     attr="Esri World Topo Map",
     name="Esri Topografía (Claro)",
-    overlay=False,
-    control=True
-).add_to(mapa)
+    control_scale=True
+)
 
-# 2. Capa Secundaria Opcional: ESRI Satelital
 folium.TileLayer(
     tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attr="Esri World Imagery",
     name="Vista Satelital (Esri)",
-    overlay=False,
-    control=True
+    show=False
 ).add_to(mapa)
 
-# --- LÍMITES FRONTERIZOS EN NEGRO SIN NOMBRES ---
 try:
     url_fronteras = "https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/south-america.geojson"
     resp_f = requests.get(url_fronteras, timeout=6)
@@ -187,7 +177,6 @@ try:
 except Exception as e:
     print(f"Aviso: No se pudieron descargar las fronteras ({e})")
 
-# --- MARCADORES DE EMBALSES ---
 for _, r in df.iterrows():
     popup_html = f"""
     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">
@@ -219,11 +208,9 @@ for _, r in df.iterrows():
         fill_opacity=0.8
     ).add_to(mapa)
 
-# --- CONTROLES UBICADOS ABAJO A LA DERECHA (BOTTOMRIGHT) ---
 folium.LayerControl(position="bottomright").add_to(mapa)
 mapa.add_child(MeasureControl(position="bottomright"))
 
-# --- GENERACIÓN DE CAPA GEOJSON ---
 geojson_data = {"type": "FeatureCollection", "features": []}
 for _, r in df.iterrows():
     feature = {
@@ -241,12 +228,10 @@ for _, r in df.iterrows():
 with open("embalses.geojson", "w", encoding="utf-8") as f:
     json.dump(geojson_data, f, ensure_ascii=False, indent=2)
 
-# --- INYECCIÓN DE DASHBOARD Y ESTILOS CSS DE UBICACIÓN ---
 json_represas_js = json.dumps(lista_procesada, ensure_ascii=False)
 
 widget_html = f"""
 <style>
-    /* Ubicar los controles de Leaflet abajo a la derecha a 15px (~1cm) del borde inferior */
     .leaflet-bottom.leaflet-right {{
         bottom: 15px !important;
         right: 15px !important;
@@ -484,7 +469,6 @@ widget_html = f"""
 mapa.get_root().html.add_child(folium.Element(widget_html))
 mapa.save("index.html")
 
-# --- ACUMULACIÓN EN EXCEL HISTÓRICO ---
 archivo_excel = "historico_embalses.xlsx"
 try:
     df_historico_previo = pd.read_excel(archivo_excel)
@@ -494,4 +478,4 @@ except FileNotFoundError:
     df_historico = df
 
 df_historico.to_excel(archivo_excel, index=False)
-print("Proceso completado con éxito: Mapa Topográfico Claro predeterminado y controles reubicados abajo a la derecha.")
+print("Proceso completado exitosamente.")
