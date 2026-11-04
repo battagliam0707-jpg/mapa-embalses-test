@@ -115,7 +115,7 @@ for p in represas:
         res = (60.0, datetime.date.today().strftime("%Y-%m-%d"), "Telemetría Satelital Backup")
 
     pct, fecha, fuente = res
-    
+
     if 50.0 <= pct <= 85.0:
         color_folium = "green"
         color_hex = "#27AE60"
@@ -141,13 +141,44 @@ for p in represas:
     lista_procesada.append(p_mod)
 
 df = pd.DataFrame(lista_procesada)
-mapa = folium.Map(location=[-15.0, -65.0], zoom_start=4, tiles="OpenStreetMap", control_scale=True)
+
+# --- MAPA BASE CON ESRI TOPOGRAPHY COMO PRESET ---
+mapa = folium.Map(
+    location=[-15.0, -65.0],
+    zoom_start=4,
+    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+    attr="Esri World Topo Map",
+    name="Esri Topografía",
+    control_scale=True
+)
+
+# Capa secundaria Satelital opcional
 folium.TileLayer(
     tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attr="Esri World Imagery",
     name="Vista Satelital (Esri)"
 ).add_to(mapa)
 
+# --- LÍMITES FRONTERIZOS EN NEGRO SIN NOMBRES ---
+try:
+    url_fronteras = "https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/south-america.geojson"
+    resp_f = requests.get(url_fronteras, timeout=6)
+    if resp_f.status_code == 200:
+        folium.GeoJson(
+            resp_f.json(),
+            name="Límites Internacionales",
+            style_function=lambda x: {
+                "color": "#000000",
+                "weight": 1.2,
+                "fillColor": "#000000",
+                "fillOpacity": 0.0,
+                "opacity": 0.85
+            }
+        ).add_to(mapa)
+except Exception as e:
+    print(f"Aviso: No se pudieron descargar las fronteras ({e})")
+
+# --- MARCADORES DE EMBALSES ---
 for _, r in df.iterrows():
     popup_html = f"""
     <div style="font-family: Arial, sans-serif; width: 250px; font-size: 12px;">
@@ -182,6 +213,7 @@ for _, r in df.iterrows():
 folium.LayerControl().add_to(mapa)
 mapa.add_child(MeasureControl())
 
+# --- GENERACIÓN DE CAPA GEOJSON ---
 geojson_data = {"type": "FeatureCollection", "features": []}
 for _, r in df.iterrows():
     feature = {
@@ -199,6 +231,7 @@ for _, r in df.iterrows():
 with open("embalses.geojson", "w", encoding="utf-8") as f:
     json.dump(geojson_data, f, ensure_ascii=False, indent=2)
 
+# --- INYECCIÓN DE DASHBOARD Y WIDGETS INTERACTIVOS ---
 json_represas_js = json.dumps(lista_procesada, ensure_ascii=False)
 
 widget_html = f"""
@@ -435,6 +468,7 @@ widget_html = f"""
 mapa.get_root().html.add_child(folium.Element(widget_html))
 mapa.save("index.html")
 
+# --- ACUMULACIÓN EN EXCEL HISTÓRICO ---
 archivo_excel = "historico_embalses.xlsx"
 try:
     df_historico_previo = pd.read_excel(archivo_excel)
@@ -444,4 +478,4 @@ except FileNotFoundError:
     df_historico = df
 
 df_historico.to_excel(archivo_excel, index=False)
-print("Proceso completado con éxito.")
+print("Proceso completado con éxito: Esri Topografía predeterminada y límites negros sin nombres agregados.")
