@@ -160,28 +160,17 @@ for _, r in df.iterrows():
 
 folium.LayerControl().add_to(mapa)
 mapa.add_child(MeasureControl())
-mapa.save("index.html")
 
-geojson_data = {
-    "type": "FeatureCollection",
-    "features": []
-}
-
+# --- GENERACIÓN DE CAPA GEOJSON ---
+geojson_data = {"type": "FeatureCollection", "features": []}
 for _, r in df.iterrows():
     feature = {
         "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [float(r["lon"]), float(r["lat"])]
-        },
+        "geometry": {"type": "Point", "coordinates": [float(r["lon"]), float(r["lat"])]},
         "properties": {
-            "id": r["id"],
-            "nombre": r["nombre"],
-            "pais": r["pais"],
-            "rio": r["rio"],
-            "capacidad_mw": r["capacidad_mw"],
-            "volumen_pct": r["volumen_pct"],
-            "fecha_actualizacion": r["fecha_actualizacion"],
+            "id": r["id"], "nombre": r["nombre"], "pais": r["pais"],
+            "rio": r["rio"], "capacidad_mw": r["capacidad_mw"],
+            "volumen_pct": r["volumen_pct"], "fecha_actualizacion": r["fecha_actualizacion"],
             "fuente_datos": r["fuente_datos"]
         }
     }
@@ -190,11 +179,225 @@ for _, r in df.iterrows():
 with open("embalses.geojson", "w", encoding="utf-8") as f:
     json.dump(geojson_data, f, ensure_ascii=False, indent=2)
 
-print("Proceso finalizado: index.html y embalses.geojson generados con 20 represas.")
+# --- INYECCIÓN DE WIDGETS (TABLA DINÁMICA & RANKING DE BARRAS) ---
+json_represas_js = json.dumps(lista_procesada, ensure_ascii=False)
+
+widget_html = f"""
+<style>
+    .dashboard-panel {{
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        width: 350px;
+        max-height: 85vh;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 9999;
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }}
+    .dashboard-header {{
+        background: #1B4F72;
+        color: white;
+        padding: 8px 12px;
+        font-weight: bold;
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }}
+    .dashboard-tabs {{
+        display: flex;
+        background: #e0e0e0;
+        border-bottom: 1px solid #ccc;
+    }}
+    .tab-btn {{
+        flex: 1;
+        padding: 6px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 11px;
+        color: #555;
+    }}
+    .tab-btn.active {{
+        background: white;
+        color: #1B4F72;
+        border-bottom: 2px solid #1B4F72;
+    }}
+    .dashboard-content {{
+        padding: 8px;
+        overflow-y: auto;
+        max-height: 65vh;
+    }}
+    .widget-table {{
+        width: 100%;
+        border-collapse: collapse;
+    }}
+    .widget-table th, .widget-table td {{
+        border-bottom: 1px solid #ddd;
+        padding: 4px 2px;
+        text-align: left;
+    }}
+    .widget-table th {{
+        background-color: #f2f2f2;
+        position: sticky;
+        top: 0;
+    }}
+    .bar-container {{
+        margin-bottom: 6px;
+    }}
+    .bar-label {{
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2px;
+        font-weight: bold;
+    }}
+    .bar-bg {{
+        background: #eee;
+        border-radius: 4px;
+        height: 10px;
+        width: 100%;
+        overflow: hidden;
+    }}
+    .bar-fill {{
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s;
+    }}
+</style>
+
+<div class="dashboard-panel" id="dashboardPanel">
+    <div class="dashboard-header">
+        <span>📊 Dashboard Hidroeléctrico</span>
+        <button onclick="toggleDashboard()" style="background:none; border:none; color:white; cursor:pointer; font-weight:bold;">—</button>
+    </div>
+    <div class="dashboard-tabs" id="dashTabs">
+        <button class="tab-btn active" onclick="switchTab('tablaTab', this)">Vista Map (Tabla)</button>
+        <button class="tab-btn" onclick="switchTab('rankingTab', this)">Ranking Niveles (%)</button>
+    </div>
+    <div class="dashboard-content" id="tablaTab">
+        <table class="widget-table">
+            <thead>
+                <tr>
+                    <th>Represa</th>
+                    <th>País</th>
+                    <th>Cap. MW</th>
+                    <th>Nivel</th>
+                </tr>
+            </thead>
+            <tbody id="tablaBody"></tbody>
+        </table>
+    </div>
+    <div class="dashboard-content" id="rankingTab" style="display:none;">
+        <div id="rankingBars"></div>
+    </div>
+</div>
+
+<script>
+    const datosEmbalses = {json_represas_js};
+
+    function switchTab(tabId, btn) {{
+        document.getElementById('tablaTab').style.display = tabId === 'tablaTab' ? 'block' : 'none';
+        document.getElementById('rankingTab').style.display = tabId === 'rankingTab' ? 'block' : 'none';
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }}
+
+    function toggleDashboard() {{
+        const tabEl = document.getElementById('dashTabs');
+        const content1 = document.getElementById('tablaTab');
+        const content2 = document.getElementById('rankingTab');
+        const isHidden = tabEl.style.display === 'none';
+        tabEl.style.display = isHidden ? 'flex' : 'none';
+        content1.style.display = isHidden ? 'block' : 'none';
+        content2.style.display = 'none';
+    }}
+
+    function actualizarWidgets() {{
+        let mapObj = null;
+        for (let key in window) {{
+            if (key.startsWith('map_') && window[key] instanceof L.Map) {{
+                mapObj = window[key];
+                break;
+            }}
+        }}
+
+        if (!mapObj) return;
+
+        const bounds = mapObj.getBounds();
+        const tbody = document.getElementById('tablaBody');
+        tbody.innerHTML = '';
+
+        let visibles = 0;
+        datosEmbalses.forEach(d => {{
+            if (bounds.contains([d.lat, d.lon])) {{
+                visibles++;
+                const row = `<tr>
+                    <td><b>${{d.nombre}}</b></td>
+                    <td>${{d.pais.split('/')[0].trim()}}</td>
+                    <td>${{d.capacidad_mw.toLocaleString()}}</td>
+                    <td><b style="color:${{d.color}}">${{d.volumen_pct}}%</b></td>
+                </tr>`;
+                tbody.innerHTML += row;
+            }}
+        }});
+
+        if (visibles === 0) {{
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Sin represas en pantalla</td></tr>';
+        }}
+    }}
+
+    function generarRanking() {{
+        const rankingDiv = document.getElementById('rankingBars');
+        rankingDiv.innerHTML = '';
+        const ordenados = [...datosEmbalses].sort((a, b) => b.volumen_pct - a.volumen_pct);
+
+        ordenados.forEach(d => {{
+            const item = `
+            <div class="bar-container">
+                <div class="bar-label">
+                    <span>${{d.nombre}} (${{d.pais.split('/')[0].trim()}})</span>
+                    <span style="color:${{d.color}}">${{d.volumen_pct}}%</span>
+                </div>
+                <div class="bar-bg">
+                    <div class="bar-fill" style="width: ${{d.volumen_pct}}%; background-color: ${{d.color}};"></div>
+                </div>
+            </div>`;
+            rankingDiv.innerHTML += item;
+        }});
+    }}
+
+    document.addEventListener('DOMContentLoaded', function() {{
+        setTimeout(() => {{
+            let mapObj = null;
+            for (let key in window) {{
+                if (key.startsWith('map_') && window[key] instanceof L.Map) {{
+                    mapObj = window[key];
+                    break;
+                }}
+            }}
+
+            if (mapObj) {{
+                mapObj.on('moveend zoomend', actualizarWidgets);
+                actualizarWidgets();
+                generarRanking();
+            }}
+        }}, 800);
+    }});
+</script>
+"""
+
+mapa.get_root().html.add_child(folium.Element(widget_html))
+mapa.save("index.html")
 
 # --- ACUMULACIÓN DE HISTÓRICO EN EXCEL ---
 archivo_excel = "historico_embalses.xlsx"
-
 try:
     df_historico_previo = pd.read_excel(archivo_excel)
     df_historico = pd.concat([df_historico_previo, df], ignore_index=True)
@@ -203,4 +406,4 @@ except FileNotFoundError:
     df_historico = df
 
 df_historico.to_excel(archivo_excel, index=False)
-print("Histórico actualizado en historico_embalses.xlsx")
+print("Proceso completado: index.html, embalses.geojson e historico_embalses.xlsx generados exitosamente.")
