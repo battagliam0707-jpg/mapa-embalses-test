@@ -2,8 +2,8 @@ name: Actualización Diaria del Mapa de Embalses
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Se ejecuta automáticamente todos los días a las 12:00 UTC
-  workflow_dispatch:      # Permite ejecución manual
+    - cron: '0 12 * * *'
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -42,17 +42,11 @@ jobs:
           git commit -m "Auto-update mapa, geojson e historico [skip ci]" || exit 0
           git push
 
-- name: Configurar Pages
-     uses: actions/configure-pages@v5
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
 
-   - name: Subir artefacto de GitHub Pages
-     uses: actions/upload-pages-artifact@v4
-     with:
-       path: '.'
-
-   - name: Desplegar en GitHub Pages
-     id: deployment
-     uses: actions/deploy-pages@v4
+      - name: Subir artefacto de GitHub Pages
+        uses: actions/upload-pages-artifact@v4
         with:
           path: '.'
 
